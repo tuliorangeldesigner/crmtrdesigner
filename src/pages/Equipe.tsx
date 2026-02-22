@@ -199,17 +199,28 @@ export default function Equipe() {
         }
 
         try {
-            // Nota: No Supabase, deletar do 'profiles' geralmente é o que o admin faz. 
-            // Para deletar o usuário do Auth de vez, precisaria de uma Edge Function ou Service Role.
-            // Aqui vamos remover o perfil, o que já bloqueia o acesso se as políticas de RLS estiverem corretas.
+            console.log('Tentando deletar perfil:', profileId);
+
+            // Verifica se tem leads antes (opcional, o banco já travaria)
+            const userLeads = leads.filter(l => l.owner_id === profileId);
+            if (userLeads.length > 0) {
+                toast.error(`Não é possível remover: Este membro possui ${userLeads.length} leads vinculados. Transfira os leads antes de remover.`);
+                return;
+            }
+
             const { error } = await supabase.from('profiles').delete().eq('id', profileId);
-            if (error) throw error;
+
+            if (error) {
+                console.error('Erro Supabase ao deletar:', error);
+                toast.error(`Erro: ${error.message || 'Ação restrita pelo banco de dados'}`);
+                return;
+            }
 
             toast.success('Membro removido com sucesso.');
             fetchTeam();
-        } catch (error) {
-            console.error(error);
-            toast.error('Erro ao remover membro.');
+        } catch (error: any) {
+            console.error('Erro inesperado ao deletar:', error);
+            toast.error('Ocorreu um erro interno ao tentar remover o membro.');
         }
     };
 
@@ -406,7 +417,10 @@ export default function Equipe() {
                                                         variant="ghost"
                                                         size="icon"
                                                         className="h-8 w-8 text-muted-foreground hover:text-red-400"
-                                                        onClick={() => handleDeleteMember(p.id, p.email)}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDeleteMember(p.id, p.email);
+                                                        }}
                                                     >
                                                         <Trash2 className="w-4 h-4" />
                                                     </Button>
