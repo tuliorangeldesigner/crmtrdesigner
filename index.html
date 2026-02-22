@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR" class="dark">
+
+<head>
+  <script>
+    window.addEventListener('error', function (e) {
+      document.body.innerHTML += '<div style="position:fixed;top:0;left:0;z-index:9999;background:red;color:white;padding:20px;width:100%;"><b>Critical Error:</b> ' + e.message + '<br/><pre>' + (e.error ? e.error.stack : '') + '</pre></div>';
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+      document.body.innerHTML += '<div style="position:fixed;top:0;left:0;z-index:9999;background:orange;color:white;padding:20px;width:100%;"><b>Promise Error:</b> ' + e.reason + '</div>';
+    });
+  </script>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>frontend</title>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>

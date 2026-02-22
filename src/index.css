@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+    --primary: 25 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 271 81% 60%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 25 95% 90%;
+    --accent-foreground: 25 95% 30%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 25 95% 53%;
+    --radius: 0.5rem;
+  }
+
+  body {
+    margin: 0;
+    /* 1 */
+    line-height: inherit;
+    /* 2 */
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  .dark {
+    --background: 0 0% 6%;
+    /* Matte Black / Very Dark Gray */
+    --foreground: 0 0% 95%;
+    /* Off-white Text */
+    --card: 0 0% 9%;
+    /* Slightly lighter matte for cards */
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 25 95% 53%;
+    /* Vivid Orange */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 271 81% 60%;
+    /* Vibrant Purple */
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    /* Matte Gray for muted elements */
+    --muted-foreground: 0 0% 65%;
+    --accent: 0 0% 13%;
+    --accent-foreground: 25 95% 53%;
+    /* Accent hovering texts turn Orange */
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 18%;
+    /* Noticeable but subtle border */
+    --input: 0 0% 18%;
+    --ring: 25 95% 53%;
+    /* Focus rings will be Orange */
+  }
+}
+
+/* ===== RESPONSIVIDADE GLOBAL ===== */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Previne zoom em inputs no iOS */
+@media screen and (max-width: 768px) {
+
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Scrollbar estilizada (thin) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted)) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 9999px;
+}
+
+/* Touch improvements */
+button,
+a,
+[role="button"],
+[draggable="true"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth transitions on orientation change */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    transition-property: none;
+  }
+}
