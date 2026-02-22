@@ -14,8 +14,8 @@ export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '', {
         autoRefreshToken: true,
         detectSessionInUrl: true,
         // Desabilita o Navigator LockManager que trava com múltiplas abas
-        lock: (name: string, acquireTimeout: number, fn: () => Promise<unknown>) => {
+        lock: ((_name: string, _acquireTimeout: number, fn: () => Promise<any>) => {
             return fn()
-        },
+        }) as any,
     }
 })
