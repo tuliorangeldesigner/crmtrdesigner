@@ -27,6 +27,7 @@ export function useLeadsCache() {
 
     const fetchData = useCallback(async (forceReload = false) => {
         if (!user) {
+            console.log('[LeadsCache] Sem usuário logado, abortando fetch.');
             setLoading(false);
             return;
         }
@@ -36,7 +37,14 @@ export function useLeadsCache() {
             setLoading(true);
         }
 
+        // Timer de segurança para soltar o loading em no máximo 8 segundos
+        // caso o Supabase ou rede demore demais
+        const safetyTimer = setTimeout(() => {
+            setLoading(false);
+        }, 8000);
+
         try {
+            console.log('[LeadsCache] Iniciando busca de leads...');
             // Sincroniza Leads
             let query = supabase.from('leads').select('*').order('created_at', { ascending: false });
             if (!isAdmin) {
@@ -45,12 +53,13 @@ export function useLeadsCache() {
             const { data, error } = await query;
 
             if (error) {
-                console.error('Erro sincronizando leads', error);
+                console.error('[LeadsCache] Erro sincronizando leads:', error);
                 toast.error('Erro ao carregar dados do banco.');
             } else if (data) {
+                console.log(`[LeadsCache] ${data.length} leads recebidos.`);
                 const typedData = data as unknown as Lead[];
 
-                // Disparo de Meta / Venda Fechada (Confetti e Toasts em Real-time)
+                // Disparo de Meta / Venda Fechada
                 if (globalLeadsCache && globalLeadsCache.length > 0) {
                     typedData.forEach(newLead => {
                         if (newLead.status_pipeline === 'Fechado') {
@@ -77,6 +86,7 @@ export function useLeadsCache() {
             }
 
             // Sincroniza Profiles (Meta)
+            console.log('[LeadsCache] Sincronizando perfis...');
             if (isAdmin) {
                 const { data: profs } = await supabase.from('profiles').select('*');
                 if (profs) {
@@ -93,9 +103,11 @@ export function useLeadsCache() {
                     setProfilesMeta(map);
                 }
             }
+            console.log('[LeadsCache] Busca finalizada com sucesso.');
         } catch (error) {
-            console.error('Crash no fetchData:', error);
+            console.error('[LeadsCache] Crash no fetchData:', error);
         } finally {
+            clearTimeout(safetyTimer);
             setLoading(false);
         }
     }, [user?.id, isAdmin]);
@@ -104,11 +116,17 @@ export function useLeadsCache() {
         let isMounted = true;
         fetchData();
 
+        console.log('[LeadsCache] Ativando canal Realtime...');
         const channel = supabase.channel('leads-realtime-update')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, () => {
-                if (isMounted) fetchData(true);
+                if (isMounted) {
+                    console.log('[LeadsCache] Mudança detectada no banco via Realtime, recarregando...');
+                    fetchData(true);
+                }
             })
-            .subscribe();
+            .subscribe((status) => {
+                console.log('[LeadsCache] Status do canal Realtime:', status);
+            });
 
         return () => {
             isMounted = false;
