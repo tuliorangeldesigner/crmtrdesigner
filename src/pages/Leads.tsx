@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import LeadFormDialog from '@/components/leads/LeadFormDialog';
 import LeadDetailDialog from '@/components/leads/LeadDetailDialog';
+import PriorityLegend, { PriorityBadge } from '@/components/leads/PriorityLegend';
 import { toast } from 'sonner';
 
 const statusColors: Record<string, string> = {
@@ -96,6 +97,7 @@ export default function Leads() {
                 </div>
             </div>
 
+            <PriorityLegend />
             <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between bg-card p-4 rounded-xl border border-border">
                 <div className="relative w-full sm:max-w-xs">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -146,6 +148,7 @@ export default function Leads() {
                                 <TableHead className="font-semibold hidden md:table-cell">Empresa</TableHead>
                                 {isAdmin && <TableHead className="font-semibold hidden lg:table-cell">Prospectador</TableHead>}
                                 <TableHead className="font-semibold hidden lg:table-cell">Origem</TableHead>
+                                <TableHead className="font-semibold text-center">Prioridade</TableHead>
                                 <TableHead className="font-semibold text-center">Pipeline</TableHead>
                                 <TableHead className="font-semibold text-center hidden xl:table-cell">Pagamento</TableHead>
                                 <TableHead className="font-semibold text-right hidden sm:table-cell">Data</TableHead>
@@ -180,6 +183,9 @@ export default function Leads() {
                                             </TableCell>
                                         )}
                                         <TableCell className="hidden lg:table-cell text-muted-foreground text-sm">{lead.origem}</TableCell>
+                                        <TableCell className="text-center">
+                                            <PriorityBadge lead={lead} />
+                                        </TableCell>
                                         <TableCell className="text-center">
                                             <Badge variant="outline" className={`border-transparent font-medium text-[11px] ${statusColors[lead.status_pipeline] || 'bg-muted'}`}>
                                                 {lead.status_pipeline}

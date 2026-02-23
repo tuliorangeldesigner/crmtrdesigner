@@ -10,6 +10,7 @@ import { DollarSign, GripVertical, Building2, Phone, ChevronDown, ChevronUp, Mes
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import LeadDetailDialog from '@/components/leads/LeadDetailDialog';
+import PriorityLegend, { PriorityBadge } from '@/components/leads/PriorityLegend';
 
 const pipelineColumns: { status: LeadStatusPipeline; label: string; color: string; bgColor: string; textColor: string }[] = [
     { status: 'Contatado', label: 'Contatado', color: 'border-blue-500', bgColor: 'bg-blue-500/10', textColor: 'text-blue-400' },
@@ -180,6 +181,9 @@ export default function Kanban() {
                             </button>
                         </div>
                     )}
+                    <div className="flex items-center gap-2 mt-2">
+                        <PriorityBadge lead={lead} />
+                    </div>
                     <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/50">
                         <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
                             {lead.origem}
@@ -220,6 +224,8 @@ export default function Kanban() {
                     <span className="sm:hidden"> Toque no card para mover.</span>
                 </p>
             </div>
+
+            <PriorityLegend />
 
             {/* ===== DESKTOP: Kanban horizontal ===== */}
             <div className="hidden md:flex gap-4 overflow-x-auto pb-4" style={{ minHeight: '70vh' }}>

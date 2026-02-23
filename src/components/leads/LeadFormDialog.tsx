@@ -14,6 +14,7 @@ import type { LeadOrigem, LeadStatusPipeline, LeadStatusPagamento } from '@/type
 const origemOptions: LeadOrigem[] = ['Instagram', 'Google Maps', 'Indicação', 'WhatsApp', 'Outros'];
 const pipelineOptions: LeadStatusPipeline[] = ['Contatado', 'Respondeu', 'Interessado', 'Em negociação', 'Fechado', 'Perdido'];
 const pagamentoOptions: LeadStatusPagamento[] = ['Pendente', 'Pago'];
+const prioridadeOptions: string[] = ['Baixa', 'Média', 'Alta'];
 
 interface LeadFormDialogProps {
     onLeadCreated: () => void;
@@ -34,6 +35,7 @@ export default function LeadFormDialog({ onLeadCreated }: LeadFormDialogProps) {
     const [tipoServico, setTipoServico] = useState('');
     const [statusPipeline, setStatusPipeline] = useState<LeadStatusPipeline>('Contatado');
     const [statusPagamento, setStatusPagamento] = useState<LeadStatusPagamento>('Pendente');
+    const [prioridade, setPrioridade] = useState<any>('Média');
 
     const resetForm = () => {
         setNomeCliente('');
@@ -46,6 +48,7 @@ export default function LeadFormDialog({ onLeadCreated }: LeadFormDialogProps) {
         setTipoServico('');
         setStatusPipeline('Contatado');
         setStatusPagamento('Pendente');
+        setPrioridade('Média');
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -75,6 +78,7 @@ export default function LeadFormDialog({ onLeadCreated }: LeadFormDialogProps) {
                 tipo_servico: tipoServico.trim() || null,
                 status_pipeline: statusPipeline,
                 status_pagamento: statusPagamento,
+                prioridade: prioridade,
                 owner_id: user.id,
             }).select().abortSignal(controller.signal);
 
@@ -234,6 +238,19 @@ export default function LeadFormDialog({ onLeadCreated }: LeadFormDialogProps) {
                                     </SelectTrigger>
                                     <SelectContent>
                                         {pagamentoOptions.map(p => (
+                                            <SelectItem key={p} value={p}>{p}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Prioridade</Label>
+                                <Select value={prioridade} onValueChange={(v) => setPrioridade(v)}>
+                                    <SelectTrigger className="bg-background/50">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {prioridadeOptions.map(p => (
                                             <SelectItem key={p} value={p}>{p}</SelectItem>
                                         ))}
                                     </SelectContent>

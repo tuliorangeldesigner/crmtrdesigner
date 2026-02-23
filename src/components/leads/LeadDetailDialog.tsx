@@ -15,6 +15,7 @@ import { openWhatsApp } from '@/lib/whatsapp';
 const origemOptions: LeadOrigem[] = ['Instagram', 'Google Maps', 'Indicação', 'WhatsApp', 'Outros'];
 const pipelineOptions: LeadStatusPipeline[] = ['Contatado', 'Respondeu', 'Interessado', 'Em negociação', 'Fechado', 'Perdido'];
 const pagamentoOptions: LeadStatusPagamento[] = ['Pendente', 'Pago'];
+const prioridadeOptions: string[] = ['Baixa', 'Média', 'Alta'];
 
 interface LeadDetailDialogProps {
     lead: Lead | null;
@@ -40,6 +41,7 @@ export default function LeadDetailDialog({ lead, open, onOpenChange, onUpdated }
     const [tipoServico, setTipoServico] = useState('');
     const [statusPipeline, setStatusPipeline] = useState<LeadStatusPipeline>('Contatado');
     const [statusPagamento, setStatusPagamento] = useState<LeadStatusPagamento>('Pendente');
+    const [prioridade, setPrioridade] = useState<any>('Média');
 
     // Preencher campos quando o lead mudar
     const populateFields = (l: Lead) => {
@@ -53,6 +55,7 @@ export default function LeadDetailDialog({ lead, open, onOpenChange, onUpdated }
         setTipoServico(l.tipo_servico || '');
         setStatusPipeline(l.status_pipeline as LeadStatusPipeline);
         setStatusPagamento(l.status_pagamento as LeadStatusPagamento);
+        setPrioridade(l.prioridade || 'Média');
         setConfirmDelete(false);
         setNovaNota('');
     };
@@ -94,6 +97,7 @@ export default function LeadDetailDialog({ lead, open, onOpenChange, onUpdated }
                 tipo_servico: tipoServico.trim() || null,
                 status_pipeline: statusPipeline,
                 status_pagamento: statusPagamento,
+                prioridade: prioridade,
                 updated_at: new Date().toISOString(),
             }).eq('id', lead.id).select().abortSignal(controller.signal);
 
@@ -252,6 +256,15 @@ export default function LeadDetailDialog({ lead, open, onOpenChange, onUpdated }
                                 <SelectTrigger className="bg-background/50"><SelectValue /></SelectTrigger>
                                 <SelectContent>
                                     {pagamentoOptions.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Prioridade</Label>
+                            <Select value={prioridade} onValueChange={(v) => setPrioridade(v)}>
+                                <SelectTrigger className="bg-background/50"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                    {prioridadeOptions.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
                                 </SelectContent>
                             </Select>
                         </div>
