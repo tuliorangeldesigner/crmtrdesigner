@@ -79,7 +79,7 @@ export default function Topbar() {
                         </span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={signOut} className="text-destructive focus:bg-destructive/10 cursor-pointer">
+                    <DropdownMenuItem onSelect={signOut} className="text-destructive focus:bg-destructive/10 cursor-pointer">
                         Sair do sistema
                     </DropdownMenuItem>
                 </DropdownMenuContent>

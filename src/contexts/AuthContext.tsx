@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import type { User, Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { clearLeadsCache } from '@/hooks/useLeadsCache'
+import { toast } from 'sonner'
 
 interface AuthContextType {
     user: User | null
@@ -88,8 +89,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     const signOut = async () => {
-        clearLeadsCache()
-        await supabase.auth.signOut()
+        try {
+            console.log('[Auth] Iniciando logout...');
+            setLoading(true);
+            clearLeadsCache();
+            const { error } = await supabase.auth.signOut();
+            if (error) throw error;
+            console.log('[Auth] Logout realizado com sucesso.');
+            toast.success('Você saiu do sistema.');
+        } catch (error: any) {
+            console.error('[Auth] Erro ao sair:', error);
+            toast.error('Erro ao sair do sistema. Tente fechar a aba.');
+        } finally {
+            setLoading(false);
+        }
     }
 
     const value = useMemo(() => ({
