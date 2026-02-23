@@ -7,10 +7,17 @@ import { toast } from 'sonner';
 
 export let globalLeadsCache: Lead[] | null = null;
 export let globalProfilesCache: Record<string, any> = {};
+let lastFetchTime = 0;
+let globalSubscription: any = null;
 
 export function clearLeadsCache() {
     globalLeadsCache = null;
     globalProfilesCache = {};
+    lastFetchTime = 0;
+    if (globalSubscription) {
+        supabase.removeChannel(globalSubscription);
+        globalSubscription = null;
+    }
 }
 
 export function updateLeadInCache(updatedLead: Lead) {
@@ -33,7 +40,14 @@ export function useLeadsCache() {
 
     const fetchData = useCallback(async (forceReload = false) => {
         if (!user) {
-            console.log('[LeadsCache] Sem usuário logado, abortando fetch.');
+            setLoading(false);
+            return;
+        }
+
+        // Cache de 30 segundos para evitar loads ao navegar entre menus
+        const now = Date.now();
+        if (!forceReload && globalLeadsCache && (now - lastFetchTime < 30000)) {
+            console.log('[LeadsCache] Usando cache para navegação instantânea.');
             setLoading(false);
             return;
         }
@@ -43,15 +57,12 @@ export function useLeadsCache() {
             setLoading(true);
         }
 
-        // Timer de segurança para soltar o loading em no máximo 8 segundos
-        // caso o Supabase ou rede demore demais
-        const safetyTimer = setTimeout(() => {
-            setLoading(false);
-        }, 8000);
+        const safetyTimer = setTimeout(() => setLoading(false), 8000);
 
         try {
-            console.log('[LeadsCache] Iniciando busca de leads...');
-            // Sincroniza Leads
+            console.time('[LeadsCache] Carregamento');
+            console.log('[LeadsCache] Buscando dados novos...');
+
             let query = supabase.from('leads').select('*').order('created_at', { ascending: false });
             if (!isAdmin) {
                 query = query.eq('owner_id', user.id);
@@ -59,13 +70,12 @@ export function useLeadsCache() {
             const { data, error } = await query;
 
             if (error) {
-                console.error('[LeadsCache] Erro sincronizando leads:', error);
+                console.error('[LeadsCache] Erro:', error);
                 toast.error('Erro ao carregar dados do banco.');
             } else if (data) {
-                console.log(`[LeadsCache] ${data.length} leads recebidos.`);
                 const typedData = data as unknown as Lead[];
 
-                // Disparo de Meta / Venda Fechada
+                // Confetti em tempo real
                 if (globalLeadsCache && globalLeadsCache.length > 0) {
                     typedData.forEach(newLead => {
                         if (newLead.status_pipeline === 'Fechado') {
@@ -91,8 +101,7 @@ export function useLeadsCache() {
                 setLeads(typedData);
             }
 
-            // Sincroniza Profiles (Meta)
-            console.log('[LeadsCache] Sincronizando perfis...');
+            // Perfis
             if (isAdmin) {
                 const { data: profs } = await supabase.from('profiles').select('*');
                 if (profs) {
@@ -109,9 +118,11 @@ export function useLeadsCache() {
                     setProfilesMeta(map);
                 }
             }
-            console.log('[LeadsCache] Busca finalizada com sucesso.');
+
+            lastFetchTime = Date.now();
+            console.timeEnd('[LeadsCache] Carregamento');
         } catch (error) {
-            console.error('[LeadsCache] Crash no fetchData:', error);
+            console.error('[LeadsCache] Crash:', error);
         } finally {
             clearTimeout(safetyTimer);
             setLoading(false);
@@ -119,25 +130,17 @@ export function useLeadsCache() {
     }, [user?.id, isAdmin]);
 
     useEffect(() => {
-        let isMounted = true;
         fetchData();
 
-        console.log('[LeadsCache] Ativando canal Realtime...');
-        const channel = supabase.channel('leads-realtime-update')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, () => {
-                if (isMounted) {
-                    console.log('[LeadsCache] Mudança detectada no banco via Realtime, recarregando...');
+        if (!globalSubscription) {
+            console.log('[LeadsCache] Ativando Realtime Global...');
+            globalSubscription = supabase.channel('leads-global-sync')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, () => {
                     fetchData(true);
-                }
-            })
-            .subscribe((status) => {
-                console.log('[LeadsCache] Status do canal Realtime:', status);
-            });
-
-        return () => {
-            isMounted = false;
-            supabase.removeChannel(channel);
-        };
+                })
+                .subscribe();
+        }
+        // Nota: Não removemos o canal no cleanup para manter o singleton ativo entre rotas
     }, [fetchData]);
 
     const refetch = useCallback(() => fetchData(true), [fetchData]);
