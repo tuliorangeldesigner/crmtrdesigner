@@ -68,6 +68,13 @@ export function useLeadsCache() {
             setLoading(true);
         }
 
+        // Fallback de segurança: Se a chamada travar, libera a tela após 8 segundos
+        const safetyTimeout = setTimeout(() => {
+            console.warn('[LeadsCache] Timeout de sincronização.');
+            setLoading(false);
+            toast.error('A conexão com o servidor está lenta ou bloqueada.');
+        }, 8000);
+
         try {
             console.time('[LeadsCache] Sincronização');
 
@@ -130,7 +137,9 @@ export function useLeadsCache() {
             console.timeEnd('[LeadsCache] Sincronização');
         } catch (error) {
             console.error('[LeadsCache] Crash:', error);
+            toast.error('Erro ao carregar dados do funil.');
         } finally {
+            clearTimeout(safetyTimeout);
             setLoading(false);
         }
     }, [user?.id, isAdmin]);

@@ -5,7 +5,8 @@ import { toast } from 'sonner';
 import {
     BookOpen, Target, ArrowRight, DollarSign, AlertCircle,
     CheckCircle2, MessageSquare, Search, MapPin, Instagram, Smartphone,
-    Bot, TrendingUp, Flame, Star, XCircle, Mic, Clock, Users, Zap, Copy
+    Bot, TrendingUp, Flame, Star, XCircle, Mic, Clock, Users, Zap, Copy,
+    Columns3, LayoutDashboard
 } from 'lucide-react';
 
 const copyToClipboard = (text: string) => {
@@ -21,6 +22,22 @@ export default function Manual() {
                 <p className="text-muted-foreground mt-1">
                     Captação de clientes para serviços digitais (Design / Sites / Vídeos)
                 </p>
+            </div>
+
+            {/* Menu de Navegação Interna */}
+            <div className="flex flex-wrap gap-2 pt-2 border-b border-border pb-4">
+                <Button variant="outline" size="sm" asChild className="text-xs">
+                    <a href="#como-usar-crm">Como Usar o CRM</a>
+                </Button>
+                <Button variant="outline" size="sm" asChild className="text-xs">
+                    <a href="#scripts">Scripts de Abordagem</a>
+                </Button>
+                <Button variant="outline" size="sm" asChild className="text-xs">
+                    <a href="#comissoes">Regras de Comissão</a>
+                </Button>
+                <Button variant="outline" size="sm" asChild className="text-xs">
+                    <a href="#uso-ia">Uso de IA</a>
+                </Button>
             </div>
 
             {/* =================== SEÇÃO 1: OBJETIVO =================== */}
@@ -348,7 +365,7 @@ export default function Manual() {
             </Card>
 
             {/* =================== SEÇÃO 10: USO DE IA =================== */}
-            <Card className="bg-card border-border border-secondary/30">
+            <Card className="bg-card border-border border-secondary/30" id="uso-ia">
                 <CardHeader className="flex flex-row items-center gap-2">
                     <Bot className="w-5 h-5 text-secondary" />
                     <CardTitle className="text-base">Usando IA para Prospectar (ChatGPT / Gemini)</CardTitle>
@@ -384,7 +401,7 @@ export default function Manual() {
             </Card>
 
             {/* =================== SEÇÃO 11: COMISSÕES =================== */}
-            <Card className="bg-card border-border border-emerald-500/30">
+            <Card className="bg-card border-border border-emerald-500/30" id="comissoes">
                 <CardHeader className="flex flex-row items-center gap-2">
                     <DollarSign className="w-5 h-5 text-emerald-400" />
                     <CardTitle className="text-base">Modelo de Comissão</CardTitle>
@@ -492,28 +509,54 @@ export default function Manual() {
             </Card>
 
             {/* =================== SEÇÃO 14: COMO USAR O CRM =================== */}
-            <Card className="bg-card border-border">
+            <Card className="bg-card border-border" id="como-usar-crm">
                 <CardHeader className="flex flex-row items-center gap-2">
                     <BookOpen className="w-5 h-5 text-primary" />
-                    <CardTitle className="text-base">Como Usar o CRM</CardTitle>
+                    <CardTitle className="text-base">Guia Completo: Como Usar o CRM Passo a Passo</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-6">
                     <div className="space-y-3">
-                        {[
-                            { step: 'Cadastrar lead', desc: 'Vá em Leads → clique em "+ Novo Lead". Preencha nome, contato, origem e valor.' },
-                            { step: 'Buscar e filtrar', desc: 'Use a barra de pesquisa para encontrar leads por nome ou empresa.' },
-                            { step: 'Editar ou excluir', desc: 'Clique em qualquer lead na tabela para abrir o editor.' },
-                            { step: 'Mover no Kanban', desc: 'Vá em Kanban e arraste o card entre as colunas para atualizar o status.' },
-                            { step: 'Fechar venda', desc: 'Mova para "Fechado" e altere pagamento para "Pago". Comissão calcula automaticamente.' },
-                        ].map((s, i) => (
-                            <div key={i} className="flex gap-3">
-                                <div className="w-7 h-7 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs shrink-0">{i + 1}</div>
-                                <div>
-                                    <p className="text-sm font-medium">{s.step}</p>
-                                    <p className="text-xs text-muted-foreground">{s.desc}</p>
-                                </div>
-                            </div>
-                        ))}
+                        <p className="text-sm text-foreground font-medium">O CRM (Customer Relationship Management) é o seu escritório central. É aqui que você organiza todos os contatos com as empresas e acompanha o que vai virar dinheiro. Veja as telas principais:</p>
+                    </div>
+
+                    <div className="grid gap-4">
+                        <div className="bg-muted/10 border border-border/50 rounded-lg p-4 space-y-3">
+                            <h4 className="font-bold flex items-center gap-2 text-primary"><Users className="w-5 h-5" /> 1. Tela de Leads (A sua base de clientes)</h4>
+                            <p className="text-xs text-muted-foreground">Aqui ficam todos os clientes que você está abordando ou já abordou.</p>
+                            <ul className="text-xs text-muted-foreground list-disc ml-5 space-y-2">
+                                <li><strong>Cadastrar um novo lead:</strong> Achou uma empresa no Instagram? Antes de fazer qualquer coisa, clique em <code>+ Novo Lead</code>. Coloque o Nome, o Contato, a Origem (Instagram/Google) e defina o Status Inicial (ex: Contatado).</li>
+                                <li><strong>Por que registrar tudo?</strong> O cérebro esquece, o CRM não. Se você mandar 50 mensagens por dia e não registrar, não vai saber para quem precisa mandar segunda mensagem amanhã (o famoso Follow-up).</li>
+                                <li><strong>Acessar detalhes:</strong> A qualquer momento, se você clicar no nome do Lead na tabela, vai abrir a ficha dele para você alterar telefone, nome ou adicionar observações.</li>
+                            </ul>
+                        </div>
+
+                        <div className="bg-muted/10 border border-border/50 rounded-lg p-4 space-y-3">
+                            <h4 className="font-bold flex items-center gap-2 text-blue-400"><Columns3 className="w-5 h-5" /> 2. Tela Kanban (Seu funil de fechamento visual)</h4>
+                            <p className="text-xs text-muted-foreground">Para quem prefere um visual de "quadro", aqui você enxerga claramente quem tá perto de fechar.</p>
+                            <ul className="text-xs text-muted-foreground list-disc ml-5 space-y-2">
+                                <li><strong>Arraste os cartões:</strong> Cada cliente é um cartãozinho. Se você mandou mensagem, ele tá em "Contatado". O cliente respondeu? <strong>Clique e arraste</strong> para a coluna "Respondeu".</li>
+                                <li><strong>Mova para a direita:</strong> O seu objetivo todos os dias é olhar esse quadro e pensar "Como eu empurro essa pessoa pra próxima coluna da direita?". O objetivo final é levá-lo para "Fechado".</li>
+                            </ul>
+                        </div>
+
+                        <div className="bg-muted/10 border border-border/50 rounded-lg p-4 space-y-3">
+                            <h4 className="font-bold flex items-center gap-2 text-emerald-400"><DollarSign className="w-5 h-5" /> 3. Fechamento e Comissões (Recebendo a Grana)</h4>
+                            <p className="text-xs text-muted-foreground">Aqui é a consolidação do seu trabalho. Quando o gestor fecha o projeto e o cliente paga.</p>
+                            <ul className="text-xs text-muted-foreground list-disc ml-5 space-y-2">
+                                <li>Mova o lead na tabela ou no Kanban para a coluna <strong>"Fechado"</strong>.</li>
+                                <li>Abra a ficha do lead e preencha exatamente o <strong>Valor do Serviço</strong> (Ex: se fechou um site por R$ 1.500, coloque 1500 na caixinha).</li>
+                                <li>Altere o status de Pagamento para <strong>"Pago"</strong>.</li>
+                                <li>Assim que o sistema identificar que está Pago, o sistema lançará a sua <strong>comissão automaticamente</strong>. Vá no menu "Comissões" para conferir o saldo gerado do seu mês!</li>
+                            </ul>
+                        </div>
+
+                        <div className="bg-muted/10 border border-border/50 rounded-lg p-4 space-y-3">
+                            <h4 className="font-bold flex items-center gap-2 text-indigo-400"><LayoutDashboard className="w-5 h-5" /> 4. Dashboard e Gamificação (Sua evolução)</h4>
+                            <ul className="text-xs text-muted-foreground list-disc ml-5 space-y-2">
+                                <li><strong>Dashboard:</strong> A sua tela inicial resume o seu sucesso. Mostra a sua Taxa de Conversão (quantos daqueles leads abordados viraram dinheiro) e os seus totais.</li>
+                                <li><strong>Gamificação:</strong> No CRM você ganha Pontos, Medalhas e passa de Níveis! Clicando em "Gamificação", você vê desafios como 'Fazer 100 Leads', 'Sua primeira venda'. Bater esses marcos desbloqueia recompensas visuais e ajuda a acompanhar seu profissionalismo.</li>
+                            </ul>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
