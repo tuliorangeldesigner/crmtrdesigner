@@ -33,6 +33,12 @@ export function removeLeadFromCache(leadId: string) {
     }
 }
 
+export function removeProfileFromCache(profileId: string) {
+    if (globalProfilesCache[profileId]) {
+        delete globalProfilesCache[profileId];
+    }
+}
+
 export function useLeadsCache() {
     const { user, isAdmin } = useAuth();
     const [leads, setLeads] = useState<Lead[]>(globalLeadsCache || []);
@@ -112,7 +118,8 @@ export function useLeadsCache() {
                 const { data: profs } = await queryProf;
                 if (profs) {
                     const profArray = Array.isArray(profs) ? profs : [profs];
-                    const map: Record<string, any> = { ...globalProfilesCache };
+                    // Se for Admin, reconstrói o mapa do zero para remover perfis que foram deletados
+                    const map: Record<string, any> = isAdmin ? {} : { ...globalProfilesCache };
                     profArray.forEach(p => { map[p.id] = p; });
                     globalProfilesCache = map;
                     setProfilesMeta(map);

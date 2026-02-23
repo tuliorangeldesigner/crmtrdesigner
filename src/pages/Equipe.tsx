@@ -209,12 +209,13 @@ export default function Equipe() {
             }
 
             const { error } = await supabase.from('profiles').delete().eq('id', profileId);
+            if (error) throw error;
 
-            if (error) {
-                console.error('Erro Supabase ao deletar:', error);
-                toast.error(`Erro: ${error.message || 'Ação restrita pelo banco de dados'}`);
-                return;
-            }
+            console.log('[Equipe] Perfil deletado com sucesso.');
+
+            // Remove do cache IMEDIATAMENTE para a UI refletir a mudança
+            const { removeProfileFromCache } = await import('@/hooks/useLeadsCache');
+            removeProfileFromCache(profileId);
 
             toast.success('Membro removido com sucesso.');
             fetchTeam();
