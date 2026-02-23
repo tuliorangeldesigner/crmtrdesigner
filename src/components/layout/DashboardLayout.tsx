@@ -1,8 +1,11 @@
 import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Topbar from './Topbar'
+import { useTimeTracker } from '@/hooks/useTimeTracker'
 
 export default function DashboardLayout() {
+    useTimeTracker();
+
     return (
         <div className="flex min-h-screen bg-background text-foreground font-sans">
             <Sidebar />

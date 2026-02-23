@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UserPlus, Users, Shield, TrendingUp, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { UserPlus, Users, Shield, TrendingUp, Eye, EyeOff, Trash2, Clock } from 'lucide-react';
 
 interface Profile {
     id: string;
@@ -24,7 +24,18 @@ interface Profile {
     fechados?: number;
     vendas?: number;
     comissao_percentual?: number;
+    online_minutes_today?: number;
+    online_minutes_total?: number;
+    last_online_date?: string;
 }
+
+const formatMinutes = (minutes?: number) => {
+    if (!minutes) return '0m';
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    if (h > 0) return `${h}h ${m}m`;
+    return `${m}m`;
+};
 
 export default function Equipe() {
     const { user, isAdmin } = useAuth();
@@ -369,6 +380,8 @@ export default function Equipe() {
                                         <TableHead>Nome / Email</TableHead>
                                         <TableHead className="text-center">Cargo</TableHead>
                                         <TableHead className="text-center hidden sm:table-cell">% Comissão</TableHead>
+                                        <TableHead className="text-center hidden sm:table-cell">Tempo Hoje</TableHead>
+                                        <TableHead className="text-center hidden md:table-cell">Tempo Total</TableHead>
                                         <TableHead className="text-center hidden sm:table-cell">Leads</TableHead>
                                         <TableHead className="text-center hidden sm:table-cell">Fechados</TableHead>
                                         <TableHead className="text-right hidden md:table-cell">Vendas</TableHead>
@@ -417,6 +430,16 @@ export default function Equipe() {
                                                     />
                                                     <span className="text-xs text-muted-foreground">%</span>
                                                 </div>
+                                            </TableCell>
+                                            <TableCell className="text-center hidden sm:table-cell">
+                                                <div className="flex flex-col items-center justify-center">
+                                                    <span className="text-xs font-semibold text-primary flex items-center gap-1">
+                                                        <Clock className="w-3 h-3" /> {formatMinutes(p.online_minutes_today)}
+                                                    </span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-center hidden md:table-cell">
+                                                <span className="text-xs text-muted-foreground">{formatMinutes(p.online_minutes_total)}</span>
                                             </TableCell>
                                             <TableCell className="text-center hidden sm:table-cell font-medium">{p.lead_count || 0}</TableCell>
                                             <TableCell className="text-center hidden sm:table-cell">{p.fechados || 0}</TableCell>
