@@ -72,7 +72,7 @@ export default function Dashboard() {
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     ).slice(0, 5);
 
-    if (loading) {
+    if (loading && leads.length === 0) {
         return (
             <div className="space-y-6">
                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Dashboard</h1>

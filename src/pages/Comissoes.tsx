@@ -27,7 +27,7 @@ export default function Comissoes() {
         return acc;
     }, {}) : {};
 
-    if (loading) {
+    if (loading && rawLeads.length === 0) {
         return (
             <div className="space-y-6">
                 <h1 className="text-3xl font-bold tracking-tight">Comissões</h1>

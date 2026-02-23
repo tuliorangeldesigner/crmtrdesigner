@@ -116,7 +116,7 @@ export default function Kanban() {
         setExpandedColumns(prev => ({ ...prev, [status]: !prev[status] }));
     };
 
-    if (loading) {
+    if (loading && leads.length === 0) {
         return (
             <div className="space-y-6">
                 <div>

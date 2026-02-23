@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import confetti from 'canvas-confetti';
 import { toast } from 'sonner';
 
+// Memória Global (Persiste entre as páginas)
 export let globalLeadsCache: Lead[] | null = null;
 export let globalProfilesCache: Record<string, any> = {};
 let lastFetchTime = 0;
@@ -38,44 +39,45 @@ export function useLeadsCache() {
     const [profilesMeta, setProfilesMeta] = useState<Record<string, any>>(globalProfilesCache);
     const [loading, setLoading] = useState(!globalLeadsCache);
 
-    const fetchData = useCallback(async (forceReload = false) => {
+    const fetchData = useCallback(async (options: { forceReload?: boolean, silent?: boolean } = {}) => {
         if (!user) {
             setLoading(false);
             return;
         }
 
-        // Cache de 30 segundos para evitar loads ao navegar entre menus
+        const { forceReload = false, silent = false } = options;
+
+        // Regra de Ouro: Se já temos dados e não faz 1 minuto, e não é reload forçado,
+        // não precisa de loading e nem de fetch novo ao navegar entre menus.
         const now = Date.now();
-        if (!forceReload && globalLeadsCache && (now - lastFetchTime < 30000)) {
-            console.log('[LeadsCache] Usando cache para navegação instantânea.');
+        if (!forceReload && globalLeadsCache && (now - lastFetchTime < 60000)) {
+            console.log('[LeadsCache] Navegação Instantânea: Usando cache global.');
             setLoading(false);
             return;
         }
 
-        const shouldShowLoading = !globalLeadsCache || forceReload;
-        if (shouldShowLoading) {
+        // Só mostra o loading se não tivermos dados NENHUM ou se o usuário pediu recarga forçada explícita
+        // Se for um refresh silencioso (via Realtime), NUNCA mostra loading.
+        if (!silent && (!globalLeadsCache || forceReload)) {
             setLoading(true);
         }
 
-        const safetyTimer = setTimeout(() => setLoading(false), 8000);
-
         try {
-            console.time('[LeadsCache] Carregamento');
-            console.log('[LeadsCache] Buscando dados novos...');
+            console.time('[LeadsCache] Sincronização');
 
+            // 1. Sincroniza Leads
             let query = supabase.from('leads').select('*').order('created_at', { ascending: false });
             if (!isAdmin) {
                 query = query.eq('owner_id', user.id);
             }
             const { data, error } = await query;
 
-            if (error) {
-                console.error('[LeadsCache] Erro:', error);
-                toast.error('Erro ao carregar dados do banco.');
-            } else if (data) {
+            if (error) throw error;
+
+            if (data) {
                 const typedData = data as unknown as Lead[];
 
-                // Confetti em tempo real
+                // Lógica de Confetti em Tempo Real (apenas se mudou pra Fechado)
                 if (globalLeadsCache && globalLeadsCache.length > 0) {
                     typedData.forEach(newLead => {
                         if (newLead.status_pipeline === 'Fechado') {
@@ -101,49 +103,48 @@ export function useLeadsCache() {
                 setLeads(typedData);
             }
 
-            // Perfis
-            if (isAdmin) {
-                const { data: profs } = await supabase.from('profiles').select('*');
+            // 2. Sincroniza Profiles (Meta) - Só se for Admin ou se o cache estiver vazio
+            if (isAdmin || Object.keys(globalProfilesCache).length === 0) {
+                const queryProf = isAdmin
+                    ? supabase.from('profiles').select('*')
+                    : supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
+
+                const { data: profs } = await queryProf;
                 if (profs) {
-                    const map: Record<string, any> = {};
-                    profs.forEach(p => { map[p.id] = p; });
-                    globalProfilesCache = map;
-                    setProfilesMeta(map);
-                }
-            } else {
-                const { data: myProf } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
-                if (myProf) {
-                    const map = { [user.id]: myProf };
+                    const profArray = Array.isArray(profs) ? profs : [profs];
+                    const map: Record<string, any> = { ...globalProfilesCache };
+                    profArray.forEach(p => { map[p.id] = p; });
                     globalProfilesCache = map;
                     setProfilesMeta(map);
                 }
             }
 
             lastFetchTime = Date.now();
-            console.timeEnd('[LeadsCache] Carregamento');
+            console.timeEnd('[LeadsCache] Sincronização');
         } catch (error) {
             console.error('[LeadsCache] Crash:', error);
         } finally {
-            clearTimeout(safetyTimer);
             setLoading(false);
         }
     }, [user?.id, isAdmin]);
 
     useEffect(() => {
+        // Primeira busca (ou usa o cache se for recente)
         fetchData();
 
+        // Singleton da Inscrição Realtime (Fica ativo enquanto o site estiver aberto)
         if (!globalSubscription) {
-            console.log('[LeadsCache] Ativando Realtime Global...');
+            console.log('[LeadsCache] Conectando monitoramento em tempo real...');
             globalSubscription = supabase.channel('leads-global-sync')
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, () => {
-                    fetchData(true);
+                    // Update silencioso: Baixa os dados novos mas NÃO trava a tela do usuário
+                    fetchData({ forceReload: true, silent: true });
                 })
                 .subscribe();
         }
-        // Nota: Não removemos o canal no cleanup para manter o singleton ativo entre rotas
     }, [fetchData]);
 
-    const refetch = useCallback(() => fetchData(true), [fetchData]);
+    const refetch = useCallback(() => fetchData({ forceReload: true }), [fetchData]);
 
     return { leads, profilesMeta, loading, refetch };
 }

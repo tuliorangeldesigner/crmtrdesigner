@@ -155,7 +155,7 @@ export default function Leads() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {loading ? (
+                            {loading && filteredLeads.length === 0 ? (
                                 <TableRow>
                                     <TableCell colSpan={isAdmin ? 7 : 6} className="h-24 text-center">
                                         <div className="flex justify-center items-center h-full">

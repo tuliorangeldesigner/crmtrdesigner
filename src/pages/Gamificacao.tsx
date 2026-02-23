@@ -59,7 +59,7 @@ export default function Gamificacao() {
         valueBonusPool * 0.20  // 3rd Place
     ];
 
-    if (loading) {
+    if (loading && leads.length === 0) {
         return (
             <div className="space-y-6">
                 <h1 className="text-3xl font-bold tracking-tight">Gamificação</h1>

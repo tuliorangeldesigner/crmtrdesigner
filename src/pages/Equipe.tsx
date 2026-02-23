@@ -345,7 +345,7 @@ export default function Equipe() {
                     <CardDescription>Clique no cargo para alterar entre Admin e Prospectador.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    {loading ? (
+                    {loading && profiles.length === 0 ? (
                         <div className="flex justify-center py-8">
                             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                         </div>
