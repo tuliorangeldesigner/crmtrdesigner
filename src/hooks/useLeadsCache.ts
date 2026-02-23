@@ -142,9 +142,17 @@ export function useLeadsCache() {
         // Singleton da Inscrição Realtime (Fica ativo enquanto o site estiver aberto)
         if (!globalSubscription) {
             console.log('[LeadsCache] Conectando monitoramento em tempo real...');
+
+            // Canal para Leads
             globalSubscription = supabase.channel('leads-global-sync')
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, () => {
-                    // Update silencioso: Baixa os dados novos mas NÃO trava a tela do usuário
+                    fetchData({ forceReload: true, silent: true });
+                })
+                .subscribe();
+
+            // Canal para Perfis/Equipe
+            supabase.channel('profiles-global-sync')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
                     fetchData({ forceReload: true, silent: true });
                 })
                 .subscribe();

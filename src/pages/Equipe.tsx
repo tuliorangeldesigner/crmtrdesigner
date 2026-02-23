@@ -208,10 +208,21 @@ export default function Equipe() {
                 return;
             }
 
-            const { error } = await supabase.from('profiles').delete().eq('id', profileId);
+            const { data, error } = await supabase
+                .from('profiles')
+                .delete()
+                .eq('id', profileId)
+                .select(); // Adicionado .select() para confirmar se deletou
+
             if (error) throw error;
 
-            console.log('[Equipe] Perfil deletado com sucesso.');
+            if (!data || data.length === 0) {
+                console.warn('[Equipe] Nenhuma linha deletada. RLS bloqueou ou perfil não existe.');
+                toast.error('Não autorizado: O banco de dados bloqueou a exclusão deste perfil. Verifique as políticas de RLS.');
+                return;
+            }
+
+            console.log('[Equipe] Perfil deletado com sucesso do banco.');
 
             // Remove do cache IMEDIATAMENTE para a UI refletir a mudança
             const { removeProfileFromCache } = await import('@/hooks/useLeadsCache');
