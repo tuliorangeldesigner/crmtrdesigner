@@ -127,15 +127,37 @@ export default function LeadDetailDialog({ lead, open, onOpenChange, onUpdated }
     const handleDelete = async () => {
         if (!lead) return;
         setDeleting(true);
+        console.log('[LeadDetail] Tentando deletar lead:', lead.id);
+
         try {
-            const { error } = await supabase.from('leads').delete().eq('id', lead.id);
+            // .select() é importante para o Supabase retornar o que foi deletado
+            // e sabermos se a política de segurança (RLS) permitiu
+            const { data, error } = await supabase
+                .from('leads')
+                .delete()
+                .eq('id', lead.id)
+                .select();
+
             if (error) throw error;
+
+            if (!data || data.length === 0) {
+                console.warn('[LeadDetail] Nenhuma linha deletada. RLS bloqueou ou lead não existe.');
+                toast.error('Não autorizado: Você não tem permissão para excluir este lead.');
+                return;
+            }
+
+            console.log('[LeadDetail] Lead deletado com sucesso do banco.');
+
+            // Remove do cache local IMEDIATAMENTE para a UI refletir a mudança
+            const { removeLeadFromCache } = await import('@/hooks/useLeadsCache');
+            removeLeadFromCache(lead.id);
+
             toast.success('Lead removido com sucesso.');
             onOpenChange(false);
             onUpdated();
-        } catch (error) {
-            console.error('Erro ao deletar:', error);
-            toast.error('Erro ao remover o lead.');
+        } catch (error: any) {
+            console.error('[LeadDetail] Erro ao deletar:', error);
+            toast.error(`Erro: ${error.message || 'Falha ao remover o lead'}`);
         } finally {
             setDeleting(false);
         }

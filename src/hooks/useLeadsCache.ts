@@ -19,6 +19,12 @@ export function updateLeadInCache(updatedLead: Lead) {
     }
 }
 
+export function removeLeadFromCache(leadId: string) {
+    if (globalLeadsCache) {
+        globalLeadsCache = globalLeadsCache.filter(l => l.id !== leadId);
+    }
+}
+
 export function useLeadsCache() {
     const { user, isAdmin } = useAuth();
     const [leads, setLeads] = useState<Lead[]>(globalLeadsCache || []);
