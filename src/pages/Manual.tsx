@@ -219,6 +219,48 @@ export default function Manual() {
                             <p><strong className="text-foreground">Comercio local premium:</strong> ticket medio alto, mas marca despadronizada e baixa percepcao de valor.</p>
                         </div>
                     </div>
+
+                    <div className="rounded-lg border border-border p-3 bg-primary/5">
+                        <p className="text-xs font-semibold text-foreground mb-2">Cidades que valem teste imediato (expansao)</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground">
+                            <p><strong className="text-foreground">Sudeste:</strong> Sao Paulo, Campinas, Ribeirao Preto, Sao Jose dos Campos, Rio de Janeiro, Niteroi, Belo Horizonte.</p>
+                            <p><strong className="text-foreground">Sul:</strong> Curitiba, Florianopolis e Porto Alegre (boa conversao e menor pressao de preco).</p>
+                            <p><strong className="text-foreground">Nordeste:</strong> Recife, Fortaleza e Salvador (crescimento digital e concorrencia menos estruturada).</p>
+                            <p><strong className="text-foreground">Regra de ouro:</strong> onde ha empresa + digitalizacao + dinheiro circulando, o fechamento tende a ser mais rapido.</p>
+                        </div>
+                    </div>
+
+                    <div className="rounded-lg border border-border p-3 bg-emerald-500/5">
+                        <p className="text-xs font-semibold text-foreground mb-2">Nichos que mais compram e pagam melhor</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground">
+                            <p><strong className="text-foreground">Infoprodutores / Experts:</strong> ticket alto, recompra e necessidade constante de landing, criativos e videos.</p>
+                            <p><strong className="text-foreground">Clinicas esteticas e odontologicas:</strong> precisam parecer premium para converter agenda.</p>
+                            <p><strong className="text-foreground">Empresas locais estruturadas:</strong> imobiliarias, construtoras e contabilidades compram recorrencia.</p>
+                            <p><strong className="text-foreground">E-commerce / Dropshipping:</strong> demanda alta por criativos e paginas para escalar.</p>
+                            <p><strong className="text-foreground">Food premium:</strong> entrada simples e dor visual imediata em redes sociais.</p>
+                        </div>
+                    </div>
+
+                    <div className="rounded-lg border border-border p-3 bg-background/40">
+                        <p className="text-xs font-semibold text-foreground mb-2">Perspectivas estrategicas para aumentar conversao</p>
+                        <ul className="text-xs text-muted-foreground space-y-1">
+                            <li>1. Interior forte pode fechar melhor que capital (menos leilao de preco e mais fidelidade).</li>
+                            <li>2. Nicho certo pesa mais que localizacao: foque em dor urgente + capacidade de pagamento.</li>
+                            <li>3. Quem ja anuncia e lead quente: entende ROI e compra mais rapido.</li>
+                            <li>4. Venda resultado, nao arte: mais clientes, autoridade e faturamento.</li>
+                        </ul>
+                    </div>
+
+                    <div className="rounded-lg border border-border p-3 bg-secondary/10">
+                        <p className="text-xs font-semibold text-foreground mb-2">Plano de acao imediato (5 passos)</p>
+                        <ul className="text-xs text-muted-foreground space-y-1">
+                            <li>1. Escolha 2 nichos para dominar (ex.: infoprodutores + clinicas esteticas).</li>
+                            <li>2. Escolha 3 regioes foco (ex.: Sao Paulo, Curitiba e Belo Horizonte).</li>
+                            <li>3. Faca prospeccao cirurgica em Instagram, Google Maps e Ads Library.</li>
+                            <li>4. Aborde pela dor de conversao: visual atual nao performa no potencial do negocio.</li>
+                            <li>5. Ofereca pacote (identidade + landing + criativos), nao servico isolado.</li>
+                        </ul>
+                    </div>
                 </CardContent>
             </Card>
 
