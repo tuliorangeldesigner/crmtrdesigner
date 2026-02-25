@@ -4,6 +4,7 @@ import type { User, Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { clearLeadsCache } from '@/hooks/useLeadsCache'
 import { toast } from 'sonner'
+import { useWebPush } from '@/hooks/useWebPush'
 
 interface AuthContextType {
     user: User | null
@@ -26,6 +27,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [session, setSession] = useState<Session | null>(null)
     const [loading, setLoading] = useState(true)
     const [isAdmin, setIsAdmin] = useState(false)
+
+    useWebPush(user?.id)
 
     useEffect(() => {
         // Fallback de segurança fortíssimo: Se o Supabase travar por cache bugado do navegador do usuário,
@@ -130,3 +133,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export const useAuth = () => {
     return useContext(AuthContext)
 }
+

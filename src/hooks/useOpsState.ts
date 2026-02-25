@@ -6,6 +6,8 @@ import {
   persistOpsState,
 } from '@/lib/opsStore';
 import {
+  automateQueue,
+  opsStateSignature,
   syncProfessionalsFromProfiles,
   syncQueueFromLeads,
   type OpsState,
@@ -22,7 +24,7 @@ export function useOpsState() {
   const [loadingOps, setLoadingOps] = useState(false);
 
   const syncWithCrm = useCallback((state: OpsState) => {
-    return syncQueueFromLeads(syncProfessionalsFromProfiles(state, profilesMeta), leads);
+    return automateQueue(syncQueueFromLeads(syncProfessionalsFromProfiles(state, profilesMeta), leads));
   }, [leads, profilesMeta]);
 
   useEffect(() => {
@@ -46,12 +48,23 @@ export function useOpsState() {
 
   useEffect(() => {
     const merged = syncWithCrm(opsState);
-    const changed = merged.queue.length !== opsState.queue.length || Object.keys(merged.professionals).length !== Object.keys(opsState.professionals).length;
+    const changed = opsStateSignature(merged) !== opsStateSignature(opsState);
     if (!changed) return;
     globalOpsCache = merged;
     setOpsState(merged);
     persistOpsState(merged, storageMode);
   }, [leads.length, Object.keys(profilesMeta).length]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const automated = automateQueue(opsState);
+      if (opsStateSignature(automated) === opsStateSignature(opsState)) return;
+      globalOpsCache = automated;
+      setOpsState(automated);
+      persistOpsState(automated, storageMode);
+    }, 60000);
+    return () => clearInterval(timer);
+  }, [opsState, storageMode]);
 
   const setAndPersist = useCallback(async (next: OpsState) => {
     globalOpsCache = next;

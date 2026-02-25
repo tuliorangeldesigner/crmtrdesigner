@@ -65,7 +65,7 @@ export default function ProfissionaisOps() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card>
+        <Card className="border-border/60">
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2"><UsersRound className="w-4 h-4" /> Time operacional</CardTitle>
           </CardHeader>
@@ -74,7 +74,7 @@ export default function ProfissionaisOps() {
             <p className="text-xs text-muted-foreground">Profissionais monitorados no sistema</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-border/60">
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2"><Briefcase className="w-4 h-4" /> Carga ativa</CardTitle>
           </CardHeader>
@@ -83,7 +83,7 @@ export default function ProfissionaisOps() {
             <p className="text-xs text-muted-foreground">Jobs em producao neste momento</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-border/60">
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2"><SlidersHorizontal className="w-4 h-4" /> Split de receita</CardTitle>
             <CardDescription>Regra base de distribuicao financeira</CardDescription>
@@ -108,14 +108,14 @@ export default function ProfissionaisOps() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="border-border/60">
         <CardHeader>
           <CardTitle className="text-base">Matriz de especialistas</CardTitle>
           <CardDescription>Ative especialidades, limite de jobs simultaneos e disponibilidade.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {professionals.map((prof) => (
-            <div key={prof.id} className="rounded-lg border border-border p-4 space-y-3">
+            <div key={prof.id} className="rounded-lg border border-border/50 p-4 space-y-3">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <div>
                   <p className="text-sm font-semibold">{prof.name}</p>
@@ -172,3 +172,4 @@ export default function ProfissionaisOps() {
     </div>
   );
 }
+

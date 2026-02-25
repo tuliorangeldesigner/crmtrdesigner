@@ -4,12 +4,72 @@ import type { Lead } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import confetti from 'canvas-confetti';
 import { toast } from 'sonner';
+import { OPS_QUEUE_SPECIALTIES, guessSpecialtyFromService } from '@/lib/operations';
+import { triggerLeadClosedPush } from '@/lib/webPush';
 
 // Memória Global (Persiste entre as páginas)
 export let globalLeadsCache: Lead[] | null = null;
 export let globalProfilesCache: Record<string, any> = {};
 let lastFetchTime = 0;
 let globalSubscription: any = null;
+let notificationPermissionRequested = false;
+
+const specialtyLabelMap: Record<string, string> = OPS_QUEUE_SPECIALTIES.reduce((acc, s) => {
+    acc[s.value] = s.label;
+    return acc;
+}, {} as Record<string, string>);
+
+function playLeadClosedChime() {
+    try {
+        const AudioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
+        if (!AudioCtx) return;
+
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+        const notes = [523.25, 659.25, 783.99];
+
+        notes.forEach((freq, index) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.0001, now + index * 0.12);
+            gain.gain.exponentialRampToValueAtTime(0.08, now + index * 0.12 + 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.12 + 0.22);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + index * 0.12);
+            osc.stop(now + index * 0.12 + 0.24);
+        });
+
+        setTimeout(() => {
+            try { ctx.close(); } catch { }
+        }, 800);
+    } catch {
+        // Ignora bloqueios de autoplay/áudio do navegador.
+    }
+}
+
+async function notifyBrowser(title: string, body: string) {
+    try {
+        if (typeof window === 'undefined' || !('Notification' in window)) return;
+
+        if (Notification.permission === 'granted') {
+            new Notification(title, { body });
+            return;
+        }
+
+        if (Notification.permission === 'default' && !notificationPermissionRequested) {
+            notificationPermissionRequested = true;
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                new Notification(title, { body });
+            }
+        }
+    } catch {
+        // Ignora erros de contexto/permissão.
+    }
+}
 
 export function clearLeadsCache() {
     globalLeadsCache = null;
@@ -97,15 +157,27 @@ export function useLeadsCache() {
                             const oldLead = globalLeadsCache!.find(l => l.id === newLead.id);
                             if (!oldLead || oldLead.status_pipeline !== 'Fechado') {
                                 const ownerName = globalProfilesCache[newLead.owner_id]?.full_name || globalProfilesCache[newLead.owner_id]?.email || 'um talento';
+                                const area = specialtyLabelMap[guessSpecialtyFromService(newLead.tipo_servico)] || 'Design Grafico';
                                 confetti({
                                     particleCount: 150,
                                     spread: 70,
                                     origin: { y: 0.6 },
                                     colors: ['#10b981', '#fbbf24', '#3b82f6', '#ffffff']
                                 });
-                                toast.success(`🎉 GOL! VENDA CONQUISTADA!`, {
-                                    description: `O prospectador ${ownerName} acabou de fechar o lead "${newLead.nome_cliente}"! 🚀`,
+                                toast.success('Lead fechado e enviado para producao', {
+                                    description: `Prospectador: ${ownerName} | Lead: ${newLead.nome_cliente} | Area: ${area}`,
                                     duration: 10000,
+                                });
+                                playLeadClosedChime();
+                                notifyBrowser(
+                                    'Novo lead fechado',
+                                    `${newLead.nome_cliente} foi direcionado para ${area}.`
+                                );
+                                triggerLeadClosedPush({
+                                    leadId: newLead.id,
+                                    leadName: newLead.nome_cliente,
+                                    area,
+                                    ownerName,
                                 });
                             }
                         }
@@ -172,3 +244,5 @@ export function useLeadsCache() {
 
     return { leads, profilesMeta, loading, refetch };
 }
+
+

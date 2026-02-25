@@ -40,6 +40,7 @@ export type OpsState = {
   queue: OpsQueueItem[];
   settings: OpsSettings;
 };
+export const OPS_ASSIGNMENT_TIMEOUT_MINUTES = 30;
 
 const STORAGE_KEY = 'crm_ops_state_v1';
 
@@ -71,6 +72,11 @@ const DEFAULT_SETTINGS: OpsSettings = {
 
 function nowIso() {
   return new Date().toISOString();
+}
+
+function minutesSince(isoDate: string) {
+  const diffMs = Date.now() - new Date(isoDate).getTime();
+  return diffMs / 60000;
 }
 
 function safeJsonParse(value: string | null): OpsState | null {
@@ -176,8 +182,40 @@ export function syncQueueFromLeads(state: OpsState, leads: any[]): OpsState {
       });
     });
 
-  const filteredQueue = nextQueue.filter((q) => validLeadIds.has(q.leadId) || q.status === 'entregue');
+  const filteredQueue = nextQueue.filter(
+    (q) => validLeadIds.has(q.leadId) || q.status === 'entregue' || q.id.startsWith('manual-')
+  );
   return { ...state, queue: filteredQueue };
+}
+
+export function addManualQueueItem(
+  state: OpsState,
+  payload: { leadId: string; leadName: string; serviceType: string; specialty: OpsQueueSpecialty; notes?: string }
+): OpsState {
+  const duplicate = state.queue.find(
+    (q) => q.leadId === payload.leadId && q.specialty === payload.specialty && q.status !== 'entregue'
+  );
+  if (duplicate) return state;
+
+  const manualId = `manual-${payload.leadId}-${payload.specialty}-${Date.now()}`;
+  return {
+    ...state,
+    queue: [
+      ...state.queue,
+      {
+        id: manualId,
+        leadId: payload.leadId,
+        leadName: payload.leadName,
+        serviceType: payload.serviceType || 'Servico manual',
+        specialty: payload.specialty,
+        status: 'aguardando',
+        assignedProfessionalId: null,
+        createdAt: nowIso(),
+        updatedAt: nowIso(),
+        notes: payload.notes || 'Job manual criado pelo admin',
+      },
+    ],
+  };
 }
 
 export function sortProfessionalsForQueue(professionals: OpsProfessional[]) {
@@ -228,6 +266,70 @@ export function assignNextInQueue(state: OpsState, specialty: OpsQueueSpecialty)
         : q
     ),
   };
+}
+
+function requeueAssignedItem(state: OpsState, queueId: string): OpsState {
+  const item = state.queue.find((q) => q.id === queueId);
+  if (!item || !item.assignedProfessionalId) return state;
+  const prof = state.professionals[item.assignedProfessionalId];
+  if (!prof) return state;
+
+  return {
+    ...state,
+    professionals: {
+      ...state.professionals,
+      [prof.id]: {
+        ...prof,
+        activeJobs: Math.max(0, prof.activeJobs - 1),
+      },
+    },
+    queue: state.queue.map((q) =>
+      q.id === queueId
+        ? {
+            ...q,
+            status: 'aguardando',
+            assignedProfessionalId: null,
+            updatedAt: nowIso(),
+          }
+        : q
+    ),
+  };
+}
+
+export function automateQueue(state: OpsState, timeoutMinutes = OPS_ASSIGNMENT_TIMEOUT_MINUTES): OpsState {
+  let next = state;
+
+  // 1) Se ficou atribuido e nao iniciou no prazo, retorna para fila.
+  next.queue
+    .filter((q) => q.status === 'atribuido' && minutesSince(q.updatedAt) >= timeoutMinutes)
+    .forEach((q) => {
+      next = requeueAssignedItem(next, q.id);
+    });
+
+  // 2) Autoatribui tudo que estiver aguardando e com profissional elegivel.
+  OPS_QUEUE_SPECIALTIES.forEach((specialty) => {
+    let guard = 0;
+    while (guard < 100) {
+      const updated = assignNextInQueue(next, specialty.value);
+      if (updated === next) break;
+      next = updated;
+      guard += 1;
+    }
+  });
+
+  return next;
+}
+
+export function opsStateSignature(state: OpsState) {
+  const profSig = Object.values(state.professionals)
+    .map((p) => `${p.id}:${p.activeJobs}:${p.isAvailable}:${p.maxActiveJobs}:${p.specialties.join(',')}`)
+    .sort()
+    .join('|');
+  const queueSig = state.queue
+    .map((q) => `${q.id}:${q.status}:${q.assignedProfessionalId || '-'}:${q.updatedAt}`)
+    .sort()
+    .join('|');
+  return `${profSig}||${queueSig}`;
 }
 
 export function updateQueueStatus(state: OpsState, queueId: string, status: OpsQueueStatus): OpsState {

@@ -402,7 +402,7 @@ export default function CaptacaoOSM() {
                     const duplicateState = duplicateMap[lead.id] || 'checking'
                     const isDuplicate = duplicateState === 'duplicate'
                     return (
-                        <Card key={lead.id} className="border-border/80">
+                        <Card key={lead.id} className="border-border/50">
                             <CardHeader className="pb-3">
                                 <CardTitle className="text-lg flex items-center gap-2">
                                     <Building2 className="w-4 h-4 text-primary" />
@@ -432,7 +432,7 @@ export default function CaptacaoOSM() {
                                     <a href={lead.whatsapp} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300"><MessageCircle className="w-3.5 h-3.5" /> WhatsApp</a>
                                 </div>
 
-                                <div className="rounded-lg border border-border p-3 bg-background/70">
+                                <div className="rounded-lg border border-border/50 p-3 bg-background/70">
                                     <p className="text-xs font-semibold mb-1">Mensagem automatica sugerida</p>
                                     <p className="text-sm text-muted-foreground leading-relaxed">{lead.mensagem}</p>
                                 </div>
@@ -463,3 +463,4 @@ export default function CaptacaoOSM() {
         </div>
     )
 }
+

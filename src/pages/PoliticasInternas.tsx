@@ -10,7 +10,7 @@ export default function PoliticasInternas() {
         <p className="text-muted-foreground text-sm mt-1">Regimento operacional para captação, distribuicao, entrega e repasse.</p>
       </div>
 
-      <Card>
+      <Card className="border-border/60">
         <CardHeader className="flex flex-row items-center gap-2">
           <Scale className="w-5 h-5 text-primary" />
           <CardTitle className="text-base">Modelo de governanca</CardTitle>
@@ -24,7 +24,7 @@ export default function PoliticasInternas() {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Card>
+        <Card className="border-border/60">
           <CardHeader className="flex flex-row items-center gap-2">
             <Workflow className="w-5 h-5 text-blue-400" />
             <CardTitle className="text-base">Distribuicao dos jobs</CardTitle>
@@ -37,7 +37,7 @@ export default function PoliticasInternas() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-border/60">
           <CardHeader className="flex flex-row items-center gap-2">
             <Wallet className="w-5 h-5 text-emerald-400" />
             <CardTitle className="text-base">Split financeiro padrao</CardTitle>
@@ -51,7 +51,7 @@ export default function PoliticasInternas() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="border-border/60">
         <CardHeader className="flex flex-row items-center gap-2">
           <Users className="w-5 h-5 text-secondary" />
           <CardTitle className="text-base">Transparencia obrigatoria</CardTitle>
@@ -64,7 +64,7 @@ export default function PoliticasInternas() {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Card>
+        <Card className="border-border/60">
           <CardHeader className="flex flex-row items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-amber-400" />
             <CardTitle className="text-base">Seguranca operacional</CardTitle>
@@ -76,7 +76,7 @@ export default function PoliticasInternas() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-border/60">
           <CardHeader className="flex flex-row items-center gap-2">
             <Gavel className="w-5 h-5 text-red-400" />
             <CardTitle className="text-base">Disputa e penalidade</CardTitle>
@@ -91,3 +91,4 @@ export default function PoliticasInternas() {
     </div>
   );
 }
+
