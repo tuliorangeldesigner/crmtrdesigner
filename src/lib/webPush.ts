@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+ï»¿import { supabase } from '@/lib/supabase';
 
 const PUBLIC_VAPID_KEY = import.meta.env.VITE_WEB_PUSH_PUBLIC_KEY || '';
 
@@ -21,44 +21,54 @@ export async function registerServiceWorker() {
 }
 
 export async function subscribeWebPush(userId: string) {
-  if (!userId || !PUBLIC_VAPID_KEY) return;
-  if (typeof window === 'undefined') return;
-  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  try {
+    if (!userId || !PUBLIC_VAPID_KEY) return;
+    if (typeof window === 'undefined') return;
+    if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return;
 
-  const permission = await Notification.requestPermission();
-  if (permission !== 'granted') return;
+    // Avoid auto-prompt while tab is hidden; this often triggers AbortError in some browsers.
+    if (document.visibilityState !== 'visible') return;
 
-  const registration = await navigator.serviceWorker.ready;
-  let subscription = await registration.pushManager.getSubscription();
+    const currentPermission = Notification.permission;
+    if (currentPermission === 'denied') return;
 
-  if (!subscription) {
-    subscription = await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(PUBLIC_VAPID_KEY),
-    });
-  }
+    const permission = currentPermission === 'granted' ? 'granted' : await Notification.requestPermission();
+    if (permission !== 'granted') return;
 
-  const json = subscription.toJSON();
-  const endpoint = json.endpoint;
-  const p256dh = json.keys?.p256dh || '';
-  const auth = json.keys?.auth || '';
+    const registration = await navigator.serviceWorker.ready;
+    let subscription = await registration.pushManager.getSubscription();
 
-  if (!endpoint || !p256dh || !auth) return;
+    if (!subscription) {
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(PUBLIC_VAPID_KEY),
+      });
+    }
 
-  const { error } = await supabase.from('web_push_subscriptions').upsert(
-    {
-      endpoint,
-      user_id: userId,
-      p256dh,
-      auth,
-      user_agent: navigator.userAgent,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: 'endpoint' }
-  );
+    const json = subscription.toJSON();
+    const endpoint = json.endpoint;
+    const p256dh = json.keys?.p256dh || '';
+    const auth = json.keys?.auth || '';
 
-  if (error) {
-    console.error('[webPush] Falha ao salvar subscription:', error);
+    if (!endpoint || !p256dh || !auth) return;
+
+    const { error } = await supabase.from('web_push_subscriptions').upsert(
+      {
+        endpoint,
+        user_id: userId,
+        p256dh,
+        auth,
+        user_agent: navigator.userAgent,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'endpoint' }
+    );
+
+    if (error) {
+      console.error('[webPush] Falha ao salvar subscription:', error);
+    }
+  } catch (error) {
+    console.warn('[webPush] Inscricao ignorada por erro do navegador/push service:', error);
   }
 }
 
@@ -74,7 +84,7 @@ export async function triggerLeadClosedPush(payload: { leadId: string; leadName:
     });
 
     if (error) {
-      console.error('[webPush] Falha ao invocar função de push:', error);
+      console.error('[webPush] Falha ao invocar funcao de push:', error);
     }
   } catch (error) {
     console.error('[webPush] Erro ao enviar push:', error);

@@ -6,9 +6,14 @@ export function useWebPush(userId: string | undefined) {
     let mounted = true;
 
     (async () => {
-      await registerServiceWorker();
-      if (mounted && userId) {
-        await subscribeWebPush(userId);
+      try {
+        await registerServiceWorker();
+        if (mounted && userId) {
+          await subscribeWebPush(userId);
+        }
+      } catch (error) {
+        // Push is optional. Never block or crash auth/session flow.
+        console.warn('[webPush] Registro ignorado por falha nao critica:', error);
       }
     })();
 
