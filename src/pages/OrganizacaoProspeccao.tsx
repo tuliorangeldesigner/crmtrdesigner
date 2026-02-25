@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -90,7 +90,7 @@ export default function OrganizacaoProspeccao() {
 
   const addProspectedCity = () => {
     if (!cityForm.city.trim() || !cityForm.state.trim()) {
-      toast.error('Informe cidade e estado para registrar prospecção.');
+      toast.error('Informe cidade e estado para registrar prospecÃ§Ã£o.');
       return;
     }
     const next: ProspectorWorkspace = {
@@ -168,7 +168,7 @@ export default function OrganizacaoProspeccao() {
 
   const saveNotes = () => {
     persistWorkspace(workspace);
-    toast.success('Anotações salvas.');
+    toast.success('AnotaÃ§Ãµes salvas.');
   };
 
   const selectedName = prospectors.find((p) => p.id === selectedProspectorId)?.name || 'Prospectador';
@@ -176,8 +176,8 @@ export default function OrganizacaoProspeccao() {
   if (prospectors.length === 0) {
     return (
       <div className="space-y-4">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Organização da Prospecção</h1>
-        <Card>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">OrganizaÃ§Ã£o da ProspecÃ§Ã£o</h1>
+        <Card className="border-border/40">
           <CardContent className="py-8 text-sm text-muted-foreground">
             Nenhum prospectador encontrado na equipe. Defina usuarios com cargo "Prospectador" em Equipe para usar este modulo.
           </CardContent>
@@ -190,7 +190,7 @@ export default function OrganizacaoProspeccao() {
     <div className="space-y-6">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Organização da Prospecção</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">OrganizaÃ§Ã£o da ProspecÃ§Ã£o</h1>
           <p className="text-muted-foreground text-sm mt-1">Base operacional individual para cada prospectador trabalhar com previsibilidade e controle.</p>
         </div>
         <div className="w-full lg:w-[320px]">
@@ -215,23 +215,23 @@ export default function OrganizacaoProspeccao() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
+        <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Cidades Já Prospectadas</CardTitle>
+            <CardTitle className="text-sm">Cidades JÃ¡ Prospectadas</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{workspace.citiesProspected.length}</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Cidades Estratégicas</CardTitle>
+            <CardTitle className="text-sm">Cidades EstratÃ©gicas</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{workspace.targetCities.length}</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-border/40">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm">Tarefas Ativas</CardTitle>
           </CardHeader>
@@ -239,9 +239,9 @@ export default function OrganizacaoProspeccao() {
             <p className="text-2xl font-bold">{workspace.tasks.filter((t) => t.status !== 'done').length}</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Última Atualização</CardTitle>
+            <CardTitle className="text-sm">Ãšltima AtualizaÃ§Ã£o</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm font-medium">{new Date(workspace.updatedAt).toLocaleString('pt-BR')}</p>
@@ -251,17 +251,17 @@ export default function OrganizacaoProspeccao() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        <Card>
+        <Card className="border-border/40">
           <CardHeader>
-            <CardTitle className="text-base">Cidades Já Prospectadas</CardTitle>
-            <CardDescription>Histórico das cidades e status para evitar retrabalho.</CardDescription>
+            <CardTitle className="text-base">Cidades JÃ¡ Prospectadas</CardTitle>
+            <CardDescription>HistÃ³rico das cidades e status para evitar retrabalho.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               <Input placeholder="Cidade" value={cityForm.city} onChange={(e) => setCityForm((p) => ({ ...p, city: e.target.value }))} />
               <Input placeholder="UF" value={cityForm.state} onChange={(e) => setCityForm((p) => ({ ...p, state: e.target.value }))} />
               <Input placeholder="Nicho (ex: clinicas)" value={cityForm.niche} onChange={(e) => setCityForm((p) => ({ ...p, niche: e.target.value }))} />
-              <Input placeholder="Última ação (ex: 2 follow-ups)" value={cityForm.lastAction} onChange={(e) => setCityForm((p) => ({ ...p, lastAction: e.target.value }))} />
+              <Input placeholder="Ãšltima aÃ§Ã£o (ex: 2 follow-ups)" value={cityForm.lastAction} onChange={(e) => setCityForm((p) => ({ ...p, lastAction: e.target.value }))} />
             </div>
             <Select value={cityForm.status} onValueChange={(v: ProspectedCity['status']) => setCityForm((p) => ({ ...p, status: v }))}>
               <SelectTrigger><SelectValue /></SelectTrigger>
@@ -272,15 +272,15 @@ export default function OrganizacaoProspeccao() {
                 <SelectItem value="fechado">Fechado</SelectItem>
               </SelectContent>
             </Select>
-            <Textarea placeholder="Observações rápidas..." value={cityForm.notes} onChange={(e) => setCityForm((p) => ({ ...p, notes: e.target.value }))} />
+            <Textarea placeholder="ObservaÃ§Ãµes rÃ¡pidas..." value={cityForm.notes} onChange={(e) => setCityForm((p) => ({ ...p, notes: e.target.value }))} />
             <Button onClick={addProspectedCity}>Adicionar cidade prospectada</Button>
 
             <div className="space-y-2">
               {workspace.citiesProspected.map((item) => (
-                <div key={item.id} className="rounded-lg border border-border/40 p-3 flex items-start justify-between gap-3">
+                <div key={item.id} className="rounded-lg border border-border/30 p-3 flex items-start justify-between gap-3">
                   <div>
                     <p className="text-sm font-semibold">{item.city} - {item.state}</p>
-                    <p className="text-xs text-muted-foreground">Nicho: {item.niche || '-'} | Última ação: {item.lastAction || '-'}</p>
+                    <p className="text-xs text-muted-foreground">Nicho: {item.niche || '-'} | Ãšltima aÃ§Ã£o: {item.lastAction || '-'}</p>
                     <p className="text-xs text-muted-foreground mt-1">{item.notes || '-'}</p>
                   </div>
                   <div className="flex flex-col items-end gap-2">
@@ -293,10 +293,10 @@ export default function OrganizacaoProspeccao() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-border/40">
           <CardHeader>
             <CardTitle className="text-base">Cidades e Estados com Potencial</CardTitle>
-            <CardDescription>Mapa tático do que vale a pena prospectar primeiro.</CardDescription>
+            <CardDescription>Mapa tÃ¡tico do que vale a pena prospectar primeiro.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -309,7 +309,7 @@ export default function OrganizacaoProspeccao() {
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="alta">Prioridade Alta</SelectItem>
-                <SelectItem value="media">Prioridade Média</SelectItem>
+                <SelectItem value="media">Prioridade MÃ©dia</SelectItem>
                 <SelectItem value="baixa">Prioridade Baixa</SelectItem>
               </SelectContent>
             </Select>
@@ -318,7 +318,7 @@ export default function OrganizacaoProspeccao() {
 
             <div className="space-y-2">
               {workspace.targetCities.map((item) => (
-                <div key={item.id} className="rounded-lg border border-border/40 p-3 flex items-start justify-between gap-3">
+                <div key={item.id} className="rounded-lg border border-border/30 p-3 flex items-start justify-between gap-3">
                   <div>
                     <p className="text-sm font-semibold">{item.city} - {item.state}</p>
                     <p className="text-xs text-muted-foreground">Potencial: {item.potential}/5 | Canais: {item.channels || '-'}</p>
@@ -336,14 +336,14 @@ export default function OrganizacaoProspeccao() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        <Card>
+        <Card className="border-border/40">
           <CardHeader>
             <CardTitle className="text-base">Planejamento de Tarefas</CardTitle>
             <CardDescription>Controle semanal de follow-ups, testes e metas de contato.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              <Input placeholder="Título da tarefa" value={taskForm.title} onChange={(e) => setTaskForm((p) => ({ ...p, title: e.target.value }))} />
+              <Input placeholder="TÃ­tulo da tarefa" value={taskForm.title} onChange={(e) => setTaskForm((p) => ({ ...p, title: e.target.value }))} />
               <Input type="date" value={taskForm.dueDate} onChange={(e) => setTaskForm((p) => ({ ...p, dueDate: e.target.value }))} />
             </div>
             <Select value={taskForm.status} onValueChange={(v: ProspectionTask['status']) => setTaskForm((p) => ({ ...p, status: v }))}>
@@ -351,7 +351,7 @@ export default function OrganizacaoProspeccao() {
               <SelectContent>
                 <SelectItem value="todo">A Fazer</SelectItem>
                 <SelectItem value="doing">Em andamento</SelectItem>
-                <SelectItem value="done">Concluída</SelectItem>
+                <SelectItem value="done">ConcluÃ­da</SelectItem>
               </SelectContent>
             </Select>
             <Textarea placeholder="Detalhes da tarefa..." value={taskForm.notes} onChange={(e) => setTaskForm((p) => ({ ...p, notes: e.target.value }))} />
@@ -359,7 +359,7 @@ export default function OrganizacaoProspeccao() {
 
             <div className="space-y-2">
               {workspace.tasks.map((task) => (
-                <div key={task.id} className="rounded-lg border border-border/40 p-3 flex items-start justify-between gap-3">
+                <div key={task.id} className="rounded-lg border border-border/30 p-3 flex items-start justify-between gap-3">
                   <div>
                     <p className="text-sm font-semibold">{task.title}</p>
                     <p className="text-xs text-muted-foreground">Prazo: {task.dueDate ? new Date(task.dueDate).toLocaleDateString('pt-BR') : '-'}</p>
@@ -371,7 +371,7 @@ export default function OrganizacaoProspeccao() {
                       <SelectContent>
                         <SelectItem value="todo">A Fazer</SelectItem>
                         <SelectItem value="doing">Em andamento</SelectItem>
-                        <SelectItem value="done">Concluída</SelectItem>
+                        <SelectItem value="done">ConcluÃ­da</SelectItem>
                       </SelectContent>
                     </Select>
                     <Button size="sm" variant="outline" onClick={() => removeItem('tasks', task.id)}>Remover</Button>
@@ -382,25 +382,26 @@ export default function OrganizacaoProspeccao() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-border/40">
           <CardHeader>
-            <CardTitle className="text-base">Bloco de Anotações Estratégicas</CardTitle>
-            <CardDescription>Script vencedor, objeções recorrentes, gatilhos de fechamento e aprendizados.</CardDescription>
+            <CardTitle className="text-base">Bloco de AnotaÃ§Ãµes EstratÃ©gicas</CardTitle>
+            <CardDescription>Script vencedor, objeÃ§Ãµes recorrentes, gatilhos de fechamento e aprendizados.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <Textarea
               value={workspace.notes}
               onChange={(e) => setWorkspace((prev) => ({ ...prev, notes: e.target.value }))}
               placeholder="Exemplo:
-- Cidades com maior resposta no nicho de clínicas.
-- Objeções mais comuns da semana.
+- Cidades com maior resposta no nicho de clÃ­nicas.
+- ObjeÃ§Ãµes mais comuns da semana.
 - Ajustes de mensagem que aumentaram resposta."
               className="min-h-[300px]"
             />
-            <Button onClick={saveNotes}>Salvar anotações</Button>
+            <Button onClick={saveNotes}>Salvar anotaÃ§Ãµes</Button>
           </CardContent>
         </Card>
       </div>
     </div>
   );
 }
+
