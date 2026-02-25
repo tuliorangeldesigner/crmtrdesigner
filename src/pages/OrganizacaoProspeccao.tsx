@@ -90,7 +90,7 @@ export default function OrganizacaoProspeccao() {
 
   const addProspectedCity = () => {
     if (!cityForm.city.trim() || !cityForm.state.trim()) {
-      toast.error('Informe cidade e estado para registrar prospecÃ§Ã£o.');
+      toast.error('Informe cidade e estado para registrar prospeccao.');
       return;
     }
     const next: ProspectorWorkspace = {
@@ -168,7 +168,7 @@ export default function OrganizacaoProspeccao() {
 
   const saveNotes = () => {
     persistWorkspace(workspace);
-    toast.success('AnotaÃ§Ãµes salvas.');
+    toast.success('Anotacoes salvas.');
   };
 
   const selectedName = prospectors.find((p) => p.id === selectedProspectorId)?.name || 'Prospectador';
@@ -176,7 +176,7 @@ export default function OrganizacaoProspeccao() {
   if (prospectors.length === 0) {
     return (
       <div className="space-y-4">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">OrganizaÃ§Ã£o da ProspecÃ§Ã£o</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Organizacao da prospeccao</h1>
         <Card className="border-border/40">
           <CardContent className="py-8 text-sm text-muted-foreground">
             Nenhum prospectador encontrado na equipe. Defina usuarios com cargo "Prospectador" em Equipe para usar este modulo.
@@ -190,7 +190,7 @@ export default function OrganizacaoProspeccao() {
     <div className="space-y-6">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">OrganizaÃ§Ã£o da ProspecÃ§Ã£o</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Organizacao da prospeccao</h1>
           <p className="text-muted-foreground text-sm mt-1">Base operacional individual para cada prospectador trabalhar com previsibilidade e controle.</p>
         </div>
         <div className="w-full lg:w-[320px]">
@@ -217,7 +217,7 @@ export default function OrganizacaoProspeccao() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Cidades JÃ¡ Prospectadas</CardTitle>
+            <CardTitle className="text-sm">Cidades Ja Prospectadas</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{workspace.citiesProspected.length}</p>
@@ -225,7 +225,7 @@ export default function OrganizacaoProspeccao() {
         </Card>
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Cidades EstratÃ©gicas</CardTitle>
+            <CardTitle className="text-sm">Cidades Estrategicas</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{workspace.targetCities.length}</p>
@@ -241,7 +241,7 @@ export default function OrganizacaoProspeccao() {
         </Card>
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Ãšltima AtualizaÃ§Ã£o</CardTitle>
+            <CardTitle className="text-sm">Ultima Atualizacao</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm font-medium">{new Date(workspace.updatedAt).toLocaleString('pt-BR')}</p>
@@ -253,15 +253,15 @@ export default function OrganizacaoProspeccao() {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <Card className="border-border/40">
           <CardHeader>
-            <CardTitle className="text-base">Cidades JÃ¡ Prospectadas</CardTitle>
-            <CardDescription>HistÃ³rico das cidades e status para evitar retrabalho.</CardDescription>
+            <CardTitle className="text-base">Cidades Ja Prospectadas</CardTitle>
+            <CardDescription>Historico das cidades e status para evitar retrabalho.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               <Input placeholder="Cidade" value={cityForm.city} onChange={(e) => setCityForm((p) => ({ ...p, city: e.target.value }))} />
               <Input placeholder="UF" value={cityForm.state} onChange={(e) => setCityForm((p) => ({ ...p, state: e.target.value }))} />
               <Input placeholder="Nicho (ex: clinicas)" value={cityForm.niche} onChange={(e) => setCityForm((p) => ({ ...p, niche: e.target.value }))} />
-              <Input placeholder="Ãšltima aÃ§Ã£o (ex: 2 follow-ups)" value={cityForm.lastAction} onChange={(e) => setCityForm((p) => ({ ...p, lastAction: e.target.value }))} />
+              <Input placeholder="Ultima acao (ex: 2 follow-ups)" value={cityForm.lastAction} onChange={(e) => setCityForm((p) => ({ ...p, lastAction: e.target.value }))} />
             </div>
             <Select value={cityForm.status} onValueChange={(v: ProspectedCity['status']) => setCityForm((p) => ({ ...p, status: v }))}>
               <SelectTrigger><SelectValue /></SelectTrigger>
@@ -272,7 +272,7 @@ export default function OrganizacaoProspeccao() {
                 <SelectItem value="fechado">Fechado</SelectItem>
               </SelectContent>
             </Select>
-            <Textarea placeholder="ObservaÃ§Ãµes rÃ¡pidas..." value={cityForm.notes} onChange={(e) => setCityForm((p) => ({ ...p, notes: e.target.value }))} />
+            <Textarea placeholder="Observacoes rapidas..." value={cityForm.notes} onChange={(e) => setCityForm((p) => ({ ...p, notes: e.target.value }))} />
             <Button onClick={addProspectedCity}>Adicionar cidade prospectada</Button>
 
             <div className="space-y-2">
@@ -280,7 +280,7 @@ export default function OrganizacaoProspeccao() {
                 <div key={item.id} className="rounded-lg border border-border/30 p-3 flex items-start justify-between gap-3">
                   <div>
                     <p className="text-sm font-semibold">{item.city} - {item.state}</p>
-                    <p className="text-xs text-muted-foreground">Nicho: {item.niche || '-'} | Ãšltima aÃ§Ã£o: {item.lastAction || '-'}</p>
+                    <p className="text-xs text-muted-foreground">Nicho: {item.niche || '-'} | Ultima acao: {item.lastAction || '-'}</p>
                     <p className="text-xs text-muted-foreground mt-1">{item.notes || '-'}</p>
                   </div>
                   <div className="flex flex-col items-end gap-2">
@@ -296,7 +296,7 @@ export default function OrganizacaoProspeccao() {
         <Card className="border-border/40">
           <CardHeader>
             <CardTitle className="text-base">Cidades e Estados com Potencial</CardTitle>
-            <CardDescription>Mapa tÃ¡tico do que vale a pena prospectar primeiro.</CardDescription>
+            <CardDescription>Mapa tatico do que vale a pena prospectar primeiro.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -309,7 +309,7 @@ export default function OrganizacaoProspeccao() {
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="alta">Prioridade Alta</SelectItem>
-                <SelectItem value="media">Prioridade MÃ©dia</SelectItem>
+                <SelectItem value="media">Prioridade Media</SelectItem>
                 <SelectItem value="baixa">Prioridade Baixa</SelectItem>
               </SelectContent>
             </Select>
@@ -343,7 +343,7 @@ export default function OrganizacaoProspeccao() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              <Input placeholder="TÃ­tulo da tarefa" value={taskForm.title} onChange={(e) => setTaskForm((p) => ({ ...p, title: e.target.value }))} />
+              <Input placeholder="Titulo da tarefa" value={taskForm.title} onChange={(e) => setTaskForm((p) => ({ ...p, title: e.target.value }))} />
               <Input type="date" value={taskForm.dueDate} onChange={(e) => setTaskForm((p) => ({ ...p, dueDate: e.target.value }))} />
             </div>
             <Select value={taskForm.status} onValueChange={(v: ProspectionTask['status']) => setTaskForm((p) => ({ ...p, status: v }))}>
@@ -351,7 +351,7 @@ export default function OrganizacaoProspeccao() {
               <SelectContent>
                 <SelectItem value="todo">A Fazer</SelectItem>
                 <SelectItem value="doing">Em andamento</SelectItem>
-                <SelectItem value="done">ConcluÃ­da</SelectItem>
+                <SelectItem value="done">Concluida</SelectItem>
               </SelectContent>
             </Select>
             <Textarea placeholder="Detalhes da tarefa..." value={taskForm.notes} onChange={(e) => setTaskForm((p) => ({ ...p, notes: e.target.value }))} />
@@ -371,7 +371,7 @@ export default function OrganizacaoProspeccao() {
                       <SelectContent>
                         <SelectItem value="todo">A Fazer</SelectItem>
                         <SelectItem value="doing">Em andamento</SelectItem>
-                        <SelectItem value="done">ConcluÃ­da</SelectItem>
+                        <SelectItem value="done">Concluida</SelectItem>
                       </SelectContent>
                     </Select>
                     <Button size="sm" variant="outline" onClick={() => removeItem('tasks', task.id)}>Remover</Button>
@@ -384,24 +384,26 @@ export default function OrganizacaoProspeccao() {
 
         <Card className="border-border/40">
           <CardHeader>
-            <CardTitle className="text-base">Bloco de AnotaÃ§Ãµes EstratÃ©gicas</CardTitle>
-            <CardDescription>Script vencedor, objeÃ§Ãµes recorrentes, gatilhos de fechamento e aprendizados.</CardDescription>
+            <CardTitle className="text-base">Bloco de Anotacoes Estrategicas</CardTitle>
+            <CardDescription>Script vencedor, objecoes recorrentes, gatilhos de fechamento e aprendizados.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <Textarea
               value={workspace.notes}
               onChange={(e) => setWorkspace((prev) => ({ ...prev, notes: e.target.value }))}
               placeholder="Exemplo:
-- Cidades com maior resposta no nicho de clÃ­nicas.
-- ObjeÃ§Ãµes mais comuns da semana.
+- Cidades com maior resposta no nicho de clinicas.
+- objecoes mais comuns da semana.
 - Ajustes de mensagem que aumentaram resposta."
               className="min-h-[300px]"
             />
-            <Button onClick={saveNotes}>Salvar anotaÃ§Ãµes</Button>
+            <Button onClick={saveNotes}>Salvar Anotacoes</Button>
           </CardContent>
         </Card>
       </div>
     </div>
   );
 }
+
+
 
