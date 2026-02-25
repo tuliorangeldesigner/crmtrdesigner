@@ -1,6 +1,7 @@
 import type { Lead } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLeadsCache } from '@/hooks/useLeadsCache';
+import { useOpsState } from '@/hooks/useOpsState';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DollarSign, Percent, TrendingUp, Calculator } from 'lucide-react';
@@ -10,14 +11,22 @@ const COMISSAO_PERCENT = 10;
 export default function Comissoes() {
     const { isAdmin } = useAuth();
     const { leads: rawLeads, profilesMeta, loading } = useLeadsCache();
+    const { opsState } = useOpsState();
 
     const leads = rawLeads.filter((l) => l.status_pipeline === 'Fechado' && l.status_pagamento === 'Pago');
+    const queueByLead = opsState.queue.reduce<Record<string, string | null>>((acc, item) => {
+        acc[item.leadId] = item.assignedProfessionalId;
+        return acc;
+    }, {});
 
     const totalVendas = leads.reduce((s, l) => s + (l.valor_servico || 0), 0);
     const totalComissao = leads.reduce((s, l) => {
         const p = profilesMeta[l.owner_id]?.comissao_percentual ?? COMISSAO_PERCENT;
         return s + ((l.valor_servico || 0) * (p / 100));
     }, 0);
+    const totalProspectorSplit = leads.reduce((s, l) => s + ((l.valor_servico || 0) * (opsState.settings.prospectorPercent / 100)), 0);
+    const totalExecutorSplit = leads.reduce((s, l) => s + ((l.valor_servico || 0) * (opsState.settings.executorPercent / 100)), 0);
+    const totalAgencySplit = leads.reduce((s, l) => s + ((l.valor_servico || 0) * (opsState.settings.agencyPercent / 100)), 0);
 
     const byOwner = isAdmin ? leads.reduce<Record<string, Lead[]>>((acc, l) => {
         if (!acc[l.owner_id]) acc[l.owner_id] = [];
@@ -52,13 +61,13 @@ export default function Comissoes() {
                 <CardContent className="space-y-2 text-sm text-muted-foreground">
                     <p>1. O lead so entra no calculo quando estiver com pipeline <strong className="text-foreground">Fechado</strong> e pagamento <strong className="text-foreground">Pago</strong>.</p>
                     <p>2. A base do calculo e o campo <strong className="text-foreground">Valor do Servico</strong> do lead.</p>
-                    <p>3. O percentual aplicado vem do prospectador em <strong className="text-foreground">Equipe (comissao_percentual)</strong>.</p>
+                    <p>3. O percentual aplicado no split vem das regras operacionais em <strong className="text-foreground">Profissionais &gt; Split de receita</strong> (atual: {opsState.settings.prospectorPercent}% / {opsState.settings.executorPercent}% / {opsState.settings.agencyPercent}%).</p>
                     <p>4. Se nao houver percentual individual definido, o sistema aplica <strong className="text-foreground">{COMISSAO_PERCENT}%</strong> como padrao.</p>
                     <p>5. Formula: <strong className="text-foreground">Comissao = Valor do Servico x (Percentual / 100)</strong>.</p>
                 </CardContent>
             </Card>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-5">
                 <Card className="bg-card border-border">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">Total em Vendas</CardTitle>
@@ -82,6 +91,45 @@ export default function Comissoes() {
                             R$ {totalComissao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">a pagar em comissoes</p>
+                    </CardContent>
+                </Card>
+
+                <Card className="bg-card border-border">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Split Prospectador</CardTitle>
+                        <Percent className="h-4 w-4 text-secondary" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold text-secondary">
+                            R$ {totalProspectorSplit.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">{opsState.settings.prospectorPercent}% sobre vendas pagas</p>
+                    </CardContent>
+                </Card>
+
+                <Card className="bg-card border-border">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Split Executor</CardTitle>
+                        <Percent className="h-4 w-4 text-blue-400" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold text-blue-400">
+                            R$ {totalExecutorSplit.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">{opsState.settings.executorPercent}% sobre vendas pagas</p>
+                    </CardContent>
+                </Card>
+
+                <Card className="bg-card border-border">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Split Agencia</CardTitle>
+                        <Percent className="h-4 w-4 text-amber-400" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold text-amber-400">
+                            R$ {totalAgencySplit.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">{opsState.settings.agencyPercent}% sobre vendas pagas</p>
                     </CardContent>
                 </Card>
 
@@ -151,12 +199,22 @@ export default function Comissoes() {
                                 <TableRow className="border-border">
                                     <TableHead>Cliente</TableHead>
                                     <TableHead className="hidden md:table-cell">Servico</TableHead>
+                                    <TableHead className="hidden lg:table-cell">Executor</TableHead>
                                     <TableHead className="text-right">Valor</TableHead>
-                                    <TableHead className="text-right">Comissao</TableHead>
+                                    <TableHead className="text-right">Prospector (R$)</TableHead>
+                                    <TableHead className="text-right hidden md:table-cell">Executor (R$)</TableHead>
+                                    <TableHead className="text-right hidden md:table-cell">Agencia (R$)</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {leads.map((lead) => (
+                                {leads.map((lead) => {
+                                    const valor = lead.valor_servico || 0;
+                                    const prospectorValue = valor * (opsState.settings.prospectorPercent / 100);
+                                    const executorValue = valor * (opsState.settings.executorPercent / 100);
+                                    const agencyValue = valor * (opsState.settings.agencyPercent / 100);
+                                    const executorId = queueByLead[lead.id];
+                                    const executorName = executorId ? (profilesMeta[executorId]?.full_name || profilesMeta[executorId]?.email || executorId) : '-';
+                                    return (
                                     <TableRow key={lead.id} className="border-border">
                                         <TableCell>
                                             <div>
@@ -166,12 +224,15 @@ export default function Comissoes() {
                                             </div>
                                         </TableCell>
                                         <TableCell className="hidden md:table-cell text-muted-foreground text-sm">{lead.tipo_servico || '-'}</TableCell>
-                                        <TableCell className="text-right font-medium">R$ {(lead.valor_servico || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</TableCell>
+                                        <TableCell className="hidden lg:table-cell text-muted-foreground text-sm">{executorName}</TableCell>
+                                        <TableCell className="text-right font-medium">R$ {valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</TableCell>
                                         <TableCell className="text-right text-emerald-400 font-medium">
-                                            R$ {((lead.valor_servico || 0) * (profilesMeta[lead.owner_id]?.comissao_percentual ?? COMISSAO_PERCENT) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                            R$ {prospectorValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                         </TableCell>
+                                        <TableCell className="text-right text-blue-400 font-medium hidden md:table-cell">R$ {executorValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</TableCell>
+                                        <TableCell className="text-right text-amber-400 font-medium hidden md:table-cell">R$ {agencyValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</TableCell>
                                     </TableRow>
-                                ))}
+                                )})}
                             </TableBody>
                         </Table>
                     )}
