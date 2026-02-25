@@ -12,12 +12,14 @@ import {
 } from '@/lib/operations';
 
 type StorageMode = 'supabase' | 'local';
+let globalOpsCache: OpsState | null = null;
+let globalMode: StorageMode = 'local';
 
 export function useOpsState() {
   const { leads, profilesMeta } = useLeadsCache();
-  const [opsState, setOpsState] = useState<OpsState>(getFallbackState());
-  const [storageMode, setStorageMode] = useState<StorageMode>('local');
-  const [loadingOps, setLoadingOps] = useState(true);
+  const [opsState, setOpsState] = useState<OpsState>(globalOpsCache || getFallbackState());
+  const [storageMode, setStorageMode] = useState<StorageMode>(globalMode);
+  const [loadingOps, setLoadingOps] = useState(false);
 
   const syncWithCrm = useCallback((state: OpsState) => {
     return syncQueueFromLeads(syncProfessionalsFromProfiles(state, profilesMeta), leads);
@@ -26,9 +28,12 @@ export function useOpsState() {
   useEffect(() => {
     let alive = true;
     (async () => {
+      setLoadingOps(true);
       const { state, mode } = await loadOpsStateWithMode();
       if (!alive) return;
       const merged = syncWithCrm(state);
+      globalOpsCache = merged;
+      globalMode = mode;
       setStorageMode(mode);
       setOpsState(merged);
       await persistOpsState(merged, mode);
@@ -40,21 +45,23 @@ export function useOpsState() {
   }, [syncWithCrm]);
 
   useEffect(() => {
-    if (loadingOps) return;
     const merged = syncWithCrm(opsState);
-    const changed = JSON.stringify(merged) !== JSON.stringify(opsState);
+    const changed = merged.queue.length !== opsState.queue.length || Object.keys(merged.professionals).length !== Object.keys(opsState.professionals).length;
     if (!changed) return;
+    globalOpsCache = merged;
     setOpsState(merged);
     persistOpsState(merged, storageMode);
   }, [leads.length, Object.keys(profilesMeta).length]);
 
   const setAndPersist = useCallback(async (next: OpsState) => {
+    globalOpsCache = next;
     setOpsState(next);
     await persistOpsState(next, storageMode);
   }, [storageMode]);
 
   const updateAndPersist = useCallback(async (updater: (prev: OpsState) => OpsState) => {
     const next = updater(opsState);
+    globalOpsCache = next;
     setOpsState(next);
     await persistOpsState(next, storageMode);
   }, [opsState, storageMode]);

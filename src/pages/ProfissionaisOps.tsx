@@ -48,24 +48,16 @@ export default function ProfissionaisOps() {
     toast.success('Configuracoes operacionais salvas.');
   };
 
-  if (loadingOps) {
-    return (
-      <div className="space-y-6">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Profissionais e Capacidade</h1>
-        <div className="flex items-center justify-center h-52">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Profissionais e Capacidade</h1>
           <p className="text-muted-foreground text-sm mt-1">Gestao de especialistas, distribuicao justa e limites de fila por profissional.</p>
-          <Badge variant="outline" className="mt-2">{modeLabel}</Badge>
+          <div className="mt-2 flex items-center gap-2">
+            <Badge variant="outline">{modeLabel}</Badge>
+            {loadingOps && <span className="text-[11px] text-muted-foreground">Sincronizando...</span>}
+          </div>
         </div>
         <Button onClick={saveAll}>
           <Save className="w-4 h-4" /> Salvar configuracoes
