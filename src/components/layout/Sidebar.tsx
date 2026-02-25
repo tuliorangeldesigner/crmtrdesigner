@@ -1,10 +1,11 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, Columns3, Rocket, DollarSign, BookOpen, Settings, UsersRound, Trophy, MapPinned, BriefcaseBusiness, ListChecks, FileText } from 'lucide-react'
+import { LayoutDashboard, Users, Columns3, Rocket, DollarSign, BookOpen, Settings, UsersRound, Trophy, MapPinned, BriefcaseBusiness, ListChecks, FileText, ClipboardList } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
 const baseNavItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
     { name: 'Leads', icon: Users, path: '/leads' },
+    { name: 'Organizacao Prospeccao', icon: ClipboardList, path: '/organizacao-prospeccao' },
     { name: 'Kanban', icon: Columns3, path: '/kanban' },
     { name: 'Comissoes', icon: DollarSign, path: '/comissoes' },
     { name: 'Gamificacao', icon: Trophy, path: '/gamificacao' },

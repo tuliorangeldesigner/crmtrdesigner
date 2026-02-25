@@ -18,6 +18,7 @@ const CaptacaoOSM = lazy(() => import('@/pages/CaptacaoOSM'))
 const ProfissionaisOps = lazy(() => import('@/pages/ProfissionaisOps'))
 const FilaOperacional = lazy(() => import('@/pages/FilaOperacional'))
 const PoliticasInternas = lazy(() => import('@/pages/PoliticasInternas'))
+const OrganizacaoProspeccao = lazy(() => import('@/pages/OrganizacaoProspeccao'))
 
 function PageLoader() {
   return <div className="flex justify-center items-center py-20">Carregando pagina...</div>
@@ -72,6 +73,7 @@ function App() {
             <Route element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
               <Route path="/dashboard" element={withSuspense(<Dashboard />)} />
               <Route path="/leads" element={withSuspense(<Leads />)} />
+              <Route path="/organizacao-prospeccao" element={withSuspense(<OrganizacaoProspeccao />)} />
               <Route path="/kanban" element={withSuspense(<Kanban />)} />
               <Route path="/comissoes" element={withSuspense(<Comissoes />)} />
               <Route path="/gamificacao" element={withSuspense(<Gamificacao />)} />
