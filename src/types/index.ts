@@ -1,6 +1,6 @@
-export type LeadPrioridade = 'Baixa' | 'Média' | 'Alta';
-export type LeadStatusPipeline = 'Contatado' | 'Respondeu' | 'Interessado' | 'Em negociação' | 'Fechado' | 'Perdido';
-export type LeadOrigem = 'Instagram' | 'Google Maps' | 'Indicação' | 'WhatsApp' | 'Outros';
+export type LeadPrioridade = 'Baixa' | 'M�dia' | 'Media' | 'Média' | 'Alta';
+export type LeadStatusPipeline = 'Contatado' | 'Respondeu' | 'Interessado' | 'Em negocia��o' | 'Em negociação' | 'Fechado' | 'Perdido';
+export type LeadOrigem = 'Instagram' | 'Google Maps' | 'OpenStreetMap' | 'Indica��o' | 'Indicação' | 'WhatsApp' | 'Outros';
 export type LeadStatusPagamento = 'Pendente' | 'Pago';
 
 export interface Lead {

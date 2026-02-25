@@ -10,6 +10,7 @@ import Manual from '@/pages/Manual'
 import Configuracoes from '@/pages/Configuracoes'
 import Equipe from '@/pages/Equipe'
 import Gamificacao from '@/pages/Gamificacao'
+import CaptacaoOSM from '@/pages/CaptacaoOSM'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import type { ReactNode } from 'react'
 
@@ -21,6 +22,16 @@ function PrivateRoute({ children }: { children: ReactNode }) {
   }
 
   return user ? <>{children}</> : <Navigate to="/login" />
+}
+
+function AdminRoute({ children }: { children: ReactNode }) {
+  const { isAdmin, loading } = useAuth()
+
+  if (loading) {
+    return <div className="flex justify-center items-center py-20">Carregando CRM...</div>
+  }
+
+  return isAdmin ? <>{children}</> : <Navigate to="/dashboard" />
 }
 
 function PublicRoute({ children }: { children: ReactNode }) {
@@ -45,7 +56,6 @@ function App() {
               </PublicRoute>
             } />
 
-            {/* Rotas Protegidas englobadas no Layout Base */}
             <Route element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/leads" element={<Leads />} />
@@ -55,9 +65,24 @@ function App() {
               <Route path="/equipe" element={<Equipe />} />
               <Route path="/manual" element={<Manual />} />
               <Route path="/configuracoes" element={<Configuracoes />} />
+              <Route
+                path="/captacao-osm"
+                element={
+                  <AdminRoute>
+                    <CaptacaoOSM />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/captacao-ia"
+                element={
+                  <AdminRoute>
+                    <CaptacaoOSM />
+                  </AdminRoute>
+                }
+              />
             </Route>
 
-            {/* Default Route */}
             <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>
         </div>

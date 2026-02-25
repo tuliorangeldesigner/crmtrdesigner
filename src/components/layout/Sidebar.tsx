@@ -1,18 +1,30 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, Columns3, Rocket, DollarSign, BookOpen, Settings, UsersRound, Trophy } from 'lucide-react'
+import { LayoutDashboard, Users, Columns3, Rocket, DollarSign, BookOpen, Settings, UsersRound, Trophy, MapPinned } from 'lucide-react'
+import { useAuth } from '@/contexts/AuthContext'
 
-const navItems = [
+const baseNavItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
     { name: 'Leads', icon: Users, path: '/leads' },
     { name: 'Kanban', icon: Columns3, path: '/kanban' },
-    { name: 'Comissões', icon: DollarSign, path: '/comissoes' },
-    { name: 'Gamificação', icon: Trophy, path: '/gamificacao' },
+    { name: 'Comissoes', icon: DollarSign, path: '/comissoes' },
+    { name: 'Gamificacao', icon: Trophy, path: '/gamificacao' },
     { name: 'Equipe', icon: UsersRound, path: '/equipe' },
     { name: 'Manual', icon: BookOpen, path: '/manual' },
-    { name: 'Configurações', icon: Settings, path: '/configuracoes' },
+    { name: 'Configuracoes', icon: Settings, path: '/configuracoes' },
 ]
 
+const adminNavItems = [
+    { name: 'Captacao de Leads IA', icon: MapPinned, path: '/captacao-ia' },
+]
+
+export function getNavItems(_isAdmin: boolean) {
+    return [...baseNavItems, ...adminNavItems]
+}
+
 export default function Sidebar() {
+    const { isAdmin } = useAuth()
+    const navItems = getNavItems(isAdmin)
+
     return (
         <aside className="w-64 flex flex-col border-r border-border bg-card hidden md:flex min-h-screen">
             <div className="h-16 flex items-center gap-3 px-6 border-b border-border">
@@ -39,11 +51,9 @@ export default function Sidebar() {
                 ))}
             </nav>
             <div className="p-4 border-t border-border text-[10px] text-muted-foreground text-center flex flex-col gap-0.5">
-                <span>Versão 1.0.0</span>
+                <span>Versao 1.0.0</span>
                 <span>Powered by <a href="https://trdesigner.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:text-orange-400 transition-colors font-semibold">TR Designer</a></span>
             </div>
         </aside>
     )
 }
-
-export { navItems }

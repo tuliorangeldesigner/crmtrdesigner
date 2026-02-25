@@ -5,13 +5,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Menu, Rocket, UsersRound, Circle } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
-import { navItems } from './Sidebar'
+import { getNavItems } from './Sidebar'
 import { usePresence } from '@/hooks/usePresence'
 import { Badge } from '@/components/ui/badge'
 
 export default function Topbar() {
     const { user, isAdmin, signOut } = useAuth()
     const { onlineUsers } = usePresence()
+    const navItems = getNavItems(isAdmin)
 
     const initials = user?.email
         ? user.email.substring(0, 2).toUpperCase()
@@ -20,7 +21,6 @@ export default function Topbar() {
     return (
         <header className="h-16 flex items-center justify-between px-4 md:px-8 border-b border-border bg-card/50 backdrop-blur-sm shrink-0">
             <div className="flex items-center gap-3">
-                {/* Mobile menu */}
                 <Sheet>
                     <SheetTrigger asChild>
                         <Button variant="ghost" size="icon" className="md:hidden">
@@ -69,7 +69,6 @@ export default function Topbar() {
                                 <Badge className="ml-1 px-1.5 py-0 min-w-[20px] h-5 justify-center bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border-transparent">
                                     {onlineUsers.filter(u => !u.isAdmin).length}
                                 </Badge>
-                                {/* Green dot indicator */}
                                 {onlineUsers.filter(u => !u.isAdmin).length > 0 && (
                                     <span className="absolute -top-1 -right-1 flex h-3 w-3">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
