@@ -9,11 +9,13 @@ const GPTS = [
     name: 'PROSPECTOR PRO - ESPECIALISTA EM PROSPECCAO',
     link: 'https://chatgpt.com/g/g-699f56a16f6481919bdf94a39d0331be-prospector-pro-especialista-em-prospeccao',
     description:
-      'Focado em prospeccao para design grafico, logos, social media, web design, edicao de video e motion.',
+      'Focado em prospeccao para design grafico, logos, social media, web design, edicao de video e motion. Tambem ensina como prospectar na pratica.',
     useCases: [
       'Criar abordagens de prospeccao por nicho',
       'Montar mensagens de follow-up',
       'Identificar dor comercial e gerar gancho de conversa',
+      'Ensinar como achar leads qualificados em canais gratuitos',
+      'Explicar metodos free de prospeccao (Instagram, Google Maps, OSM e pesquisa manual)',
     ],
   },
   {
@@ -60,6 +62,13 @@ export default function IAsAuxiliadoras() {
               <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
               No plano free do ChatGPT existem limites de uso. Evite gastar mensagens com assuntos fora do foco de
               cada GPT para nao acabar seu limite rapidamente.
+            </p>
+          </div>
+          <div className="rounded-lg border border-primary/30 bg-primary/10 p-3">
+            <p className="text-primary text-sm font-medium">No PROSPECTOR PRO, voce tambem pode pedir:</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              metodos gratuitos de prospeccao, como encontrar leads, filtros por nicho/cidade, roteiros de abordagem
+              e sequencia de follow-up para fechar mais.
             </p>
           </div>
         </CardContent>
