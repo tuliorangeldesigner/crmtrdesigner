@@ -5,20 +5,20 @@ import { useAuth } from '@/contexts/AuthContext'
 const baseNavItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
     { name: 'Leads', icon: Users, path: '/leads' },
-    { name: 'Organizacao Prospeccao', icon: ClipboardList, path: '/organizacao-prospeccao' },
+    { name: 'Organização Prospecção', icon: ClipboardList, path: '/organizacao-prospeccao' },
     { name: 'Kanban', icon: Columns3, path: '/kanban' },
-    { name: 'Comissoes', icon: DollarSign, path: '/comissoes' },
-    { name: 'Gamificacao', icon: Trophy, path: '/gamificacao' },
+    { name: 'Comissões', icon: DollarSign, path: '/comissoes' },
+    { name: 'Gamificação', icon: Trophy, path: '/gamificacao' },
     { name: 'Equipe', icon: UsersRound, path: '/equipe' },
     { name: 'Manual', icon: BookOpen, path: '/manual' },
 ]
-const configNavItem = { name: 'Configuracoes', icon: Settings, path: '/configuracoes' }
+const configNavItem = { name: 'Configurações', icon: Settings, path: '/configuracoes' }
 
 const adminNavItems = [
-    { name: 'Captacao de Leads IA', icon: MapPinned, path: '/captacao-ia' },
+    { name: 'Captação de Leads IA', icon: MapPinned, path: '/captacao-ia' },
     { name: 'Profissionais', icon: BriefcaseBusiness, path: '/profissionais' },
     { name: 'Fila Operacional', icon: ListChecks, path: '/fila-operacional' },
-    { name: 'Politicas Internas', icon: FileText, path: '/politicas-internas' },
+    { name: 'Políticas Internas', icon: FileText, path: '/politicas-internas' },
 ]
 
 export function getNavItems(isAdmin: boolean) {
