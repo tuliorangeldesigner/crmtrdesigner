@@ -15,6 +15,11 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, { hasError
         console.error('Uncaught error:', error, errorInfo);
     }
 
+    handleReload = () => {
+        if (typeof window === 'undefined') return;
+        window.location.reload();
+    };
+
     render() {
         if (this.state.hasError) {
             return (
@@ -27,6 +32,21 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, { hasError
                         <summary>Ver mais detalhes para o programador Antigravity</summary>
                         <pre style={{ whiteSpace: 'pre-wrap', color: '#ffcbcb' }}>{this.state.error?.stack}</pre>
                     </details>
+                    <br />
+                    <button
+                        onClick={this.handleReload}
+                        style={{
+                            marginTop: '8px',
+                            background: '#111',
+                            color: '#fff',
+                            border: '1px solid #fff',
+                            borderRadius: '8px',
+                            padding: '10px 14px',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Recarregar CRM
+                    </button>
                 </div>
             );
         }
