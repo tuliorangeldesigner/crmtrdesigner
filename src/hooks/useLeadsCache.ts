@@ -12,7 +12,6 @@ export let globalProfilesCache: Record<string, any> = {};
 let lastFetchTime = 0;
 let globalSubscription: any = null;
 let notificationPermissionRequested = false;
-let lastSlowConnectionToastAt = 0;
 
 const specialtyLabelMap: Record<string, string> = OPS_QUEUE_SPECIALTIES.reduce((acc, s) => {
   acc[s.value] = s.label;
@@ -130,12 +129,6 @@ export function useLeadsCache() {
     const safetyTimeout = setTimeout(() => {
       console.warn('[LeadsCache] Timeout de sincronizacao.');
       setLoading(false);
-      const nowTs = Date.now();
-      const shouldNotifySlowConnection = !silent && nowTs - lastSlowConnectionToastAt > 120000;
-      if (shouldNotifySlowConnection) {
-        toast.error('A conexao com o servidor esta lenta ou bloqueada.');
-        lastSlowConnectionToastAt = nowTs;
-      }
     }, 8000);
 
     try {
