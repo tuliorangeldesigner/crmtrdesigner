@@ -44,8 +44,8 @@ export default function PoliticasInternas() {
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
             <p>Prospector: 10% da receita liquida.</p>
-            <p>Executor(es): 45% da receita liquida.</p>
-            <p>Agencia: 45% da receita liquida.</p>
+            <p>Executor(es): 60% da receita liquida.</p>
+            <p>Agencia: 30% da receita liquida.</p>
             <p>Ajustes sao permitidos com aprovacao do admin e motivo registrado.</p>
           </CardContent>
         </Card>
@@ -91,5 +91,6 @@ export default function PoliticasInternas() {
     </div>
   );
 }
+
 
 

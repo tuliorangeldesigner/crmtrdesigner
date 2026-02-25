@@ -4,8 +4,8 @@ create table if not exists public.ops_settings (
   id text primary key default 'default',
   distribution_mode text not null default 'fila' check (distribution_mode in ('fila', 'primeiro')),
   prospector_percent integer not null default 10,
-  executor_percent integer not null default 45,
-  agency_percent integer not null default 45,
+  executor_percent integer not null default 60,
+  agency_percent integer not null default 30,
   updated_at timestamptz not null default now()
 );
 
@@ -60,5 +60,11 @@ do $$ begin
 exception when duplicate_object then null; end $$;
 
 insert into public.ops_settings (id, distribution_mode, prospector_percent, executor_percent, agency_percent)
-values ('default', 'fila', 10, 45, 45)
-on conflict (id) do nothing;
+values ('default', 'fila', 10, 60, 30)
+on conflict (id) do update
+set
+  distribution_mode = excluded.distribution_mode,
+  prospector_percent = excluded.prospector_percent,
+  executor_percent = excluded.executor_percent,
+  agency_percent = excluded.agency_percent,
+  updated_at = now();

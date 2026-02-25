@@ -18,8 +18,8 @@ function defaultState(): OpsState {
     settings: {
       distributionMode: 'fila',
       prospectorPercent: 10,
-      executorPercent: 45,
-      agencyPercent: 45,
+      executorPercent: 60,
+      agencyPercent: 30,
     },
   };
 }
@@ -28,8 +28,8 @@ function mapSettingsRow(row: any): OpsSettings {
   return {
     distributionMode: row?.distribution_mode === 'primeiro' ? 'primeiro' : 'fila',
     prospectorPercent: Number(row?.prospector_percent ?? 10),
-    executorPercent: Number(row?.executor_percent ?? 45),
-    agencyPercent: Number(row?.agency_percent ?? 45),
+    executorPercent: Number(row?.executor_percent ?? 60),
+    agencyPercent: Number(row?.agency_percent ?? 30),
   };
 }
 

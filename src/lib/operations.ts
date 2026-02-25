@@ -66,8 +66,8 @@ export const OPS_QUEUE_SPECIALTIES: { value: OpsQueueSpecialty; label: string }[
 const DEFAULT_SETTINGS: OpsSettings = {
   distributionMode: 'fila',
   prospectorPercent: 10,
-  executorPercent: 45,
-  agencyPercent: 45,
+  executorPercent: 60,
+  agencyPercent: 30,
 };
 
 function nowIso() {
