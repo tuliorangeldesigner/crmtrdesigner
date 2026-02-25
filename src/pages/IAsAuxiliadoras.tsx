@@ -19,7 +19,7 @@ const GPTS = [
   {
     id: 'tr-designer-crm',
     name: 'TR Designer - CRM',
-    link: 'https://chatgpt.com/',
+    link: 'https://chatgpt.com/g/g-699f58d5b3c88191b25a960d4f033712-tr-designer-crm',
     description:
       'GPT professor para explicar como o CRM TR Designer funciona na pratica (fluxo, paginas e regras).',
     useCases: [
