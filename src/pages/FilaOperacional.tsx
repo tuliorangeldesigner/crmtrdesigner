@@ -7,25 +7,25 @@ import { toast } from 'sonner';
 import { Clock3, PlayCircle, CheckCircle2, RefreshCw } from 'lucide-react';
 import {
   assignNextInQueue,
-  OPS_SPECIALTIES,
+  OPS_QUEUE_SPECIALTIES,
   updateQueueStatus,
-  type OpsSpecialty,
+  type OpsQueueSpecialty,
 } from '@/lib/operations';
 import { useOpsState } from '@/hooks/useOpsState';
 
 export default function FilaOperacional() {
   const { opsState, loadingOps, modeLabel, setAndPersist } = useOpsState();
-  const [manualSpecialty, setManualSpecialty] = useState<OpsSpecialty>('design');
+  const [manualSpecialty, setManualSpecialty] = useState<OpsQueueSpecialty>('design');
 
   const queueBySpecialty = useMemo(() => {
     const map: Record<string, typeof opsState.queue> = {};
-    OPS_SPECIALTIES.forEach((s) => {
+    OPS_QUEUE_SPECIALTIES.forEach((s) => {
       map[s.value] = opsState.queue.filter((q) => q.specialty === s.value && q.status !== 'entregue');
     });
     return map;
   }, [opsState.queue]);
 
-  const assignNext = (specialty: OpsSpecialty) => {
+  const assignNext = (specialty: OpsQueueSpecialty) => {
     const next = assignNextInQueue(opsState, specialty);
     if (next === opsState) {
       toast.error('Nao foi possivel atribuir: sem fila ou sem profissional elegivel.');
@@ -66,10 +66,10 @@ export default function FilaOperacional() {
           <Badge variant="outline" className="mt-2">{modeLabel}</Badge>
         </div>
         <div className="flex items-center gap-2">
-          <Select value={manualSpecialty} onValueChange={(v) => setManualSpecialty(v as OpsSpecialty)}>
+          <Select value={manualSpecialty} onValueChange={(v) => setManualSpecialty(v as OpsQueueSpecialty)}>
             <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
             <SelectContent>
-              {OPS_SPECIALTIES.map((s) => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
+              {OPS_QUEUE_SPECIALTIES.map((s) => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
             </SelectContent>
           </Select>
           <Button variant="outline" onClick={() => assignNext(manualSpecialty)}>
@@ -82,7 +82,7 @@ export default function FilaOperacional() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        {OPS_SPECIALTIES.map((specialty) => {
+        {OPS_QUEUE_SPECIALTIES.map((specialty) => {
           const items = queueBySpecialty[specialty.value] || [];
           return (
             <Card key={specialty.value}>

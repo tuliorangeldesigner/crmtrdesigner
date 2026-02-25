@@ -1,11 +1,12 @@
-export type OpsSpecialty = 'design' | 'video' | 'motion' | 'web' | 'social' | 'trafego';
+export type OpsQueueSpecialty = 'design' | 'video' | 'motion' | 'web' | 'social' | 'trafego';
+export type OpsProfessionalSpecialty = OpsQueueSpecialty | 'prospeccao';
 export type OpsQueueStatus = 'aguardando' | 'atribuido' | 'em_producao' | 'entregue';
 
 export type OpsProfessional = {
   id: string;
   name: string;
   email: string;
-  specialties: OpsSpecialty[];
+  specialties: OpsProfessionalSpecialty[];
   activeJobs: number;
   maxActiveJobs: number;
   qualityScore: number;
@@ -19,7 +20,7 @@ export type OpsQueueItem = {
   leadId: string;
   leadName: string;
   serviceType: string;
-  specialty: OpsSpecialty;
+  specialty: OpsQueueSpecialty;
   status: OpsQueueStatus;
   assignedProfessionalId: string | null;
   createdAt: string;
@@ -42,7 +43,17 @@ export type OpsState = {
 
 const STORAGE_KEY = 'crm_ops_state_v1';
 
-export const OPS_SPECIALTIES: { value: OpsSpecialty; label: string }[] = [
+export const OPS_SPECIALTIES: { value: OpsProfessionalSpecialty; label: string }[] = [
+  { value: 'prospeccao', label: 'Prospectador' },
+  { value: 'design', label: 'Design Grafico' },
+  { value: 'video', label: 'Edicao de Video' },
+  { value: 'motion', label: 'Motion' },
+  { value: 'web', label: 'Web Design' },
+  { value: 'social', label: 'Social Media' },
+  { value: 'trafego', label: 'Trafego Pago' },
+];
+
+export const OPS_QUEUE_SPECIALTIES: { value: OpsQueueSpecialty; label: string }[] = [
   { value: 'design', label: 'Design Grafico' },
   { value: 'video', label: 'Edicao de Video' },
   { value: 'motion', label: 'Motion' },
@@ -98,7 +109,7 @@ export function normalizePercentages(settings: OpsSettings): OpsSettings {
   };
 }
 
-export function guessSpecialtyFromService(service: string | null | undefined): OpsSpecialty {
+export function guessSpecialtyFromService(service: string | null | undefined): OpsQueueSpecialty {
   const text = (service || '').toLowerCase();
   if (text.includes('traf')) return 'trafego';
   if (text.includes('social')) return 'social';
@@ -122,7 +133,7 @@ export function syncProfessionalsFromProfiles(
         id: profile.id,
         name: profile.full_name || profile.email || profile.id,
         email: profile.email || '',
-        specialties: ['design'],
+        specialties: [profile.role === 'prospectador' ? 'prospeccao' : 'design'],
         activeJobs: 0,
         maxActiveJobs: 2,
         qualityScore: 80,
@@ -179,7 +190,7 @@ export function sortProfessionalsForQueue(professionals: OpsProfessional[]) {
   });
 }
 
-export function assignNextInQueue(state: OpsState, specialty: OpsSpecialty): OpsState {
+export function assignNextInQueue(state: OpsState, specialty: OpsQueueSpecialty): OpsState {
   const queueItem = state.queue
     .filter((q) => q.specialty === specialty && q.status === 'aguardando')
     .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())[0];

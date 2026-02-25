@@ -9,13 +9,13 @@ import { UsersRound, Briefcase, SlidersHorizontal, Save } from 'lucide-react';
 import {
   normalizePercentages,
   OPS_SPECIALTIES,
+  type OpsProfessionalSpecialty,
   type OpsProfessional,
   type OpsSettings,
-  type OpsSpecialty,
 } from '@/lib/operations';
 import { useOpsState } from '@/hooks/useOpsState';
 
-function toggleSpecialty(prof: OpsProfessional, specialty: OpsSpecialty): OpsProfessional {
+function toggleSpecialty(prof: OpsProfessional, specialty: OpsProfessionalSpecialty): OpsProfessional {
   const has = prof.specialties.includes(specialty);
   const specialties = has ? prof.specialties.filter((s) => s !== specialty) : [...prof.specialties, specialty];
   return { ...prof, specialties: specialties.length > 0 ? specialties : ['design'] };
