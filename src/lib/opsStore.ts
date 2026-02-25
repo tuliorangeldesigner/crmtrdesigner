@@ -3,6 +3,7 @@ import {
   loadOpsState,
   saveOpsState,
   type OpsProfessional,
+  type OpsProfessionalSpecialty,
   type OpsQueueItem,
   type OpsSettings,
   type OpsState,
@@ -32,12 +33,64 @@ function mapSettingsRow(row: any): OpsSettings {
   };
 }
 
+const OPS_SPECIALTY_VALUES = new Set<OpsProfessionalSpecialty>([
+  'prospeccao',
+  'design',
+  'video',
+  'motion',
+  'web',
+  'social',
+  'trafego',
+]);
+
+function normalizeSpecialties(values: string[]): OpsProfessionalSpecialty[] {
+  const valid = values
+    .map((v) => v.trim().toLowerCase())
+    .filter((v): v is OpsProfessionalSpecialty => OPS_SPECIALTY_VALUES.has(v as OpsProfessionalSpecialty));
+  return valid.length > 0 ? valid : ['design'];
+}
+
+function parseSpecialties(raw: unknown): OpsProfessionalSpecialty[] {
+  if (Array.isArray(raw)) {
+    return normalizeSpecialties(raw.map((v) => String(v)));
+  }
+
+  if (typeof raw === 'string') {
+    const value = raw.trim();
+    if (!value) return ['design'];
+
+    // Postgres text[] can arrive as "{design,video}" in some contexts.
+    if (value.startsWith('{') && value.endsWith('}')) {
+      const parsed = normalizeSpecialties(value
+        .slice(1, -1)
+        .split(',')
+        .map((v) => v.replace(/^"|"$/g, '').trim())
+        .filter(Boolean));
+      return parsed.length > 0 ? parsed : ['design'];
+    }
+
+    // Accept JSON array as fallback.
+    try {
+      const json = JSON.parse(value);
+      if (Array.isArray(json)) {
+        return normalizeSpecialties(json.map((v) => String(v)));
+      }
+    } catch {
+      // no-op: fallback below
+    }
+
+    return normalizeSpecialties([value]);
+  }
+
+  return ['design'];
+}
+
 function mapProfessionalRow(row: any): OpsProfessional {
   return {
     id: row.id,
     name: row.name || row.email || row.id,
     email: row.email || '',
-    specialties: Array.isArray(row.specialties) ? row.specialties : ['design'],
+    specialties: parseSpecialties(row.specialties),
     activeJobs: Number(row.active_jobs ?? 0),
     maxActiveJobs: Number(row.max_active_jobs ?? 2),
     qualityScore: Number(row.quality_score ?? 80),
