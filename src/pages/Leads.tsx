@@ -4,7 +4,7 @@ import { useLeadsCache } from '@/hooks/useLeadsCache';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useAuth } from '@/contexts/AuthContext';
-import { Search, Download } from 'lucide-react';
+import { Search, Download, Copy, ExternalLink } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -23,6 +23,9 @@ const statusColors: Record<string, string> = {
     'Fechado': 'bg-emerald-500/20 text-emerald-400',
     'Perdido': 'bg-red-500/20 text-red-400',
 };
+
+const PORTFOLIO_URL = 'https://trdesigner.vercel.app/';
+const PORTFOLIO_SCRIPT = `Perfeito! Se quiser ver alguns projetos que já fizemos, segue nosso portfólio:\n${PORTFOLIO_URL}\n\nLá você consegue visualizar a qualidade e o estilo dos nossos trabalhos.`;
 
 export default function Leads() {
     const { isAdmin } = useAuth();
@@ -80,6 +83,15 @@ export default function Leads() {
         toast.success(`${filteredLeads.length} leads exportados!`);
     };
 
+    const copyPortfolioScript = async () => {
+        try {
+            await navigator.clipboard.writeText(PORTFOLIO_SCRIPT);
+            toast.success('Texto com link do portfólio copiado.');
+        } catch {
+            toast.error('Não foi possível copiar o texto.');
+        }
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start xl:items-center gap-4">
@@ -95,6 +107,26 @@ export default function Leads() {
                     </Button>
                     <LeadFormDialog onLeadCreated={fetchLeads} />
                 </div>
+            </div>
+
+            <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                <div>
+                    <p className="text-sm font-semibold text-foreground">Portfólio para enviar ao cliente</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                        Use este link quando o cliente pedir provas dos projetos já entregues.
+                    </p>
+                    <a
+                        href={PORTFOLIO_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-primary hover:text-primary/80 underline underline-offset-4 mt-2 inline-flex items-center gap-1"
+                    >
+                        {PORTFOLIO_URL} <ExternalLink className="w-3 h-3" />
+                    </a>
+                </div>
+                <Button variant="outline" size="sm" onClick={copyPortfolioScript} className="w-full lg:w-auto">
+                    <Copy className="w-4 h-4" /> Copiar texto para WhatsApp
+                </Button>
             </div>
 
             <PriorityLegend />

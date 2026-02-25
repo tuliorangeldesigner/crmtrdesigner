@@ -5,14 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DollarSign, Percent, TrendingUp, Calculator } from 'lucide-react';
 
-const COMISSAO_PERCENT = 10; // 10% fixo de comissão
+const COMISSAO_PERCENT = 10;
 
 export default function Comissoes() {
     const { isAdmin } = useAuth();
     const { leads: rawLeads, profilesMeta, loading } = useLeadsCache();
 
-    // Filtra localmente apenas leads que dão comissão
-    const leads = rawLeads.filter(l => l.status_pipeline === 'Fechado' && l.status_pagamento === 'Pago');
+    const leads = rawLeads.filter((l) => l.status_pipeline === 'Fechado' && l.status_pagamento === 'Pago');
 
     const totalVendas = leads.reduce((s, l) => s + (l.valor_servico || 0), 0);
     const totalComissao = leads.reduce((s, l) => {
@@ -20,7 +19,6 @@ export default function Comissoes() {
         return s + ((l.valor_servico || 0) * (p / 100));
     }, 0);
 
-    // Agrupar por prospectador (admin)
     const byOwner = isAdmin ? leads.reduce<Record<string, Lead[]>>((acc, l) => {
         if (!acc[l.owner_id]) acc[l.owner_id] = [];
         acc[l.owner_id].push(l);
@@ -30,7 +28,7 @@ export default function Comissoes() {
     if (loading && rawLeads.length === 0) {
         return (
             <div className="space-y-6">
-                <h1 className="text-3xl font-bold tracking-tight">Comissões</h1>
+                <h1 className="text-3xl font-bold tracking-tight">Comissoes</h1>
                 <div className="flex items-center justify-center h-64">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                 </div>
@@ -41,15 +39,25 @@ export default function Comissoes() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Comissões</h1>
+                <h1 className="text-3xl font-bold tracking-tight">Comissoes</h1>
                 <p className="text-muted-foreground mt-1">
-                    {isAdmin ? 'Comissões de toda a equipe sobre vendas fechadas e pagas.' : 'Suas comissões sobre vendas fechadas e pagas.'}
+                    {isAdmin ? 'Comissoes de toda a equipe sobre vendas fechadas e pagas.' : 'Suas comissoes sobre vendas fechadas e pagas.'}
                 </p>
             </div>
 
-            {/* Global Setting Removed in favor of Individual Settings */}
+            <Card className="bg-card border-border">
+                <CardHeader>
+                    <CardTitle className="text-base">Como este sistema funciona</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2 text-sm text-muted-foreground">
+                    <p>1. O lead so entra no calculo quando estiver com pipeline <strong className="text-foreground">Fechado</strong> e pagamento <strong className="text-foreground">Pago</strong>.</p>
+                    <p>2. A base do calculo e o campo <strong className="text-foreground">Valor do Servico</strong> do lead.</p>
+                    <p>3. O percentual aplicado vem do prospectador em <strong className="text-foreground">Equipe (comissao_percentual)</strong>.</p>
+                    <p>4. Se nao houver percentual individual definido, o sistema aplica <strong className="text-foreground">{COMISSAO_PERCENT}%</strong> como padrao.</p>
+                    <p>5. Formula: <strong className="text-foreground">Comissao = Valor do Servico x (Percentual / 100)</strong>.</p>
+                </CardContent>
+            </Card>
 
-            {/* Cards de resumo */}
             <div className="grid gap-4 md:grid-cols-3">
                 <Card className="bg-card border-border">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -66,20 +74,20 @@ export default function Comissoes() {
 
                 <Card className="bg-card border-border">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Comissões a Pagar</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Comissoes a Pagar</CardTitle>
                         <Percent className="h-4 w-4 text-primary" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-primary">
                             R$ {totalComissao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                         </div>
-                        <p className="text-xs text-muted-foreground mt-1">a pagar em comissões</p>
+                        <p className="text-xs text-muted-foreground mt-1">a pagar em comissoes</p>
                     </CardContent>
                 </Card>
 
                 <Card className="bg-card border-border">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Ticket Médio</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Ticket Medio</CardTitle>
                         <TrendingUp className="h-4 w-4 text-secondary" />
                     </CardHeader>
                     <CardContent>
@@ -91,12 +99,11 @@ export default function Comissoes() {
                 </Card>
             </div>
 
-            {/* Tabela por Prospectador (Admin) */}
             {isAdmin && Object.keys(byOwner).length > 0 && (
                 <Card className="bg-card border-border">
                     <CardHeader className="flex flex-row items-center gap-2">
                         <Calculator className="w-5 h-5 text-primary" />
-                        <CardTitle className="text-base">Comissões por Prospectador</CardTitle>
+                        <CardTitle className="text-base">Comissoes por Prospectador</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <Table>
@@ -106,7 +113,7 @@ export default function Comissoes() {
                                     <TableHead className="text-center">Vendas</TableHead>
                                     <TableHead className="text-center">% Taxa</TableHead>
                                     <TableHead className="text-right">Total (R$)</TableHead>
-                                    <TableHead className="text-right">Comissão (R$)</TableHead>
+                                    <TableHead className="text-right">Comissao (R$)</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -121,9 +128,7 @@ export default function Comissoes() {
                                             <TableCell className="text-center">{ownerLeads.length}</TableCell>
                                             <TableCell className="text-center">{percentual}%</TableCell>
                                             <TableCell className="text-right">R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</TableCell>
-                                            <TableCell className="text-right font-bold text-primary">
-                                                R$ {comissao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                                            </TableCell>
+                                            <TableCell className="text-right font-bold text-primary">R$ {comissao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</TableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -133,7 +138,6 @@ export default function Comissoes() {
                 </Card>
             )}
 
-            {/* Lista de vendas */}
             <Card className="bg-card border-border">
                 <CardHeader>
                     <CardTitle className="text-base">Detalhamento de Vendas</CardTitle>
@@ -146,19 +150,19 @@ export default function Comissoes() {
                             <TableHeader>
                                 <TableRow className="border-border">
                                     <TableHead>Cliente</TableHead>
-                                    <TableHead className="hidden md:table-cell">Serviço</TableHead>
+                                    <TableHead className="hidden md:table-cell">Servico</TableHead>
                                     <TableHead className="text-right">Valor</TableHead>
-                                    <TableHead className="text-right">Comissão</TableHead>
+                                    <TableHead className="text-right">Comissao</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {leads.map(lead => (
+                                {leads.map((lead) => (
                                     <TableRow key={lead.id} className="border-border">
                                         <TableCell>
                                             <div>
                                                 <p className="font-medium text-sm">{lead.nome_cliente}</p>
                                                 <p className="text-xs text-muted-foreground">{lead.nome_empresa || '-'}</p>
-                                                {isAdmin && <span className="text-[10px] bg-secondary/10 text-secondary border border-secondary/20 px-1.5 py-0.5 rounded-full ml-2">👤 {profilesMeta[lead.owner_id]?.full_name || profilesMeta[lead.owner_id]?.email || lead.owner_id}</span>}
+                                                {isAdmin && <span className="text-[10px] bg-secondary/10 text-secondary border border-secondary/20 px-1.5 py-0.5 rounded-full ml-2">{profilesMeta[lead.owner_id]?.full_name || profilesMeta[lead.owner_id]?.email || lead.owner_id}</span>}
                                             </div>
                                         </TableCell>
                                         <TableCell className="hidden md:table-cell text-muted-foreground text-sm">{lead.tipo_servico || '-'}</TableCell>

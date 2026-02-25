@@ -546,6 +546,7 @@ export default function Manual() {
                                 <li>Mova o lead na tabela ou no Kanban para a coluna <strong>"Fechado"</strong>.</li>
                                 <li>Abra a ficha do lead e preencha exatamente o <strong>Valor do Serviço</strong> (Ex: se fechou um site por R$ 1.500, coloque 1500 na caixinha).</li>
                                 <li>Altere o status de Pagamento para <strong>"Pago"</strong>.</li>
+                                <li>Assim que o cliente demonstrar interesse real e entrar em fechamento, o prospectador deve abrir um grupo no WhatsApp com o cliente, comigo e com o prospectador responsavel pelo lead. Esse grupo e obrigatorio para acompanhar todo o desfecho, registrar valor final fechado e manter total transparencia entre nos.</li>
                                 <li>Assim que o sistema identificar que está Pago, o sistema lançará a sua <strong>comissão automaticamente</strong>. Vá no menu "Comissões" para conferir o saldo gerado do seu mês!</li>
                             </ul>
                         </div>
@@ -604,3 +605,4 @@ export default function Manual() {
         </div>
     );
 }
+
