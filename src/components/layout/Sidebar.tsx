@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, Columns3, Rocket, DollarSign, BookOpen, Settings, UsersRound, Trophy, MapPinned, BriefcaseBusiness, ListChecks, FileText, ClipboardList } from 'lucide-react'
+import { LayoutDashboard, Users, Columns3, Rocket, DollarSign, BookOpen, Settings, UsersRound, Trophy, MapPinned, BriefcaseBusiness, ListChecks, FileText, ClipboardList, Bot } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
 const baseNavItems = [
@@ -11,6 +11,7 @@ const baseNavItems = [
     { name: 'Gamificação', icon: Trophy, path: '/gamificacao' },
     { name: 'Equipe', icon: UsersRound, path: '/equipe' },
     { name: 'Manual', icon: BookOpen, path: '/manual' },
+    { name: 'IAs Auxiliadoras', icon: Bot, path: '/ias-auxiliadoras' },
 ]
 const configNavItem = { name: 'Configurações', icon: Settings, path: '/configuracoes' }
 
