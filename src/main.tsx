@@ -24,7 +24,8 @@ function recoverFromChunkError() {
 
 window.addEventListener('vite:preloadError', (event: Event) => {
   const customEvent = event as CustomEvent;
-  const message = customEvent?.payload?.message || '';
+  const payload = (customEvent as CustomEvent & { payload?: { message?: string } }).payload;
+  const message = payload?.message || '';
   if (isChunkLoadErrorMessage(String(message))) {
     customEvent.preventDefault();
     recoverFromChunkError();
