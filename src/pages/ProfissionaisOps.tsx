@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,7 @@ function toggleSpecialty(prof: OpsProfessional, specialty: OpsProfessionalSpecia
 
 export default function ProfissionaisOps() {
   const { opsState, loadingOps, modeLabel, setAndPersist } = useOpsState();
+  const [activeSection, setActiveSection] = useState<'profissionais' | 'regras'>('profissionais');
 
   const professionals = useMemo(() => Object.values(opsState.professionals), [opsState.professionals]);
 
@@ -64,6 +65,59 @@ export default function ProfissionaisOps() {
         </Button>
       </div>
 
+      <div className="flex items-center gap-2">
+        <Button
+          variant={activeSection === 'profissionais' ? 'default' : 'outline'}
+          onClick={() => setActiveSection('profissionais')}
+        >
+          Profissionais
+        </Button>
+        <Button
+          variant={activeSection === 'regras' ? 'default' : 'outline'}
+          onClick={() => setActiveSection('regras')}
+        >
+          Regras
+        </Button>
+      </div>
+
+      {activeSection === 'regras' ? (
+        <Card className="border-border/40">
+          <CardHeader>
+            <CardTitle className="text-base">Regras do sistema operacional</CardTitle>
+            <CardDescription>Como a fila funciona, como a distribuicao e feita e como o split financeiro e aplicado.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-5 text-sm text-muted-foreground">
+            <div className="space-y-2">
+              <p className="font-semibold text-foreground">1. Entrada do job na fila</p>
+              <p>Lead fechado entra automaticamente na fila pela especialidade do servico (design, video, motion, web, social ou trafego).</p>
+              <p>Tambem e possivel criar job manual na Fila Operacional para iniciar a execucao sem depender do funil.</p>
+            </div>
+            <div className="space-y-2">
+              <p className="font-semibold text-foreground">2. Regra de atribuicao (fila justa)</p>
+              <p>O sistema prioriza quem tem menor carga ativa, mais tempo sem receber job e melhor score operacional.</p>
+              <p>So entra na disputa quem estiver disponivel, com especialidade ativa e abaixo do limite de jobs simultaneos.</p>
+            </div>
+            <div className="space-y-2">
+              <p className="font-semibold text-foreground">3. Timeout e reatribuicao automatica</p>
+              <p>Se um job ficar atribuido sem avancar para producao dentro do prazo, ele volta para aguardando e vai para o proximo elegivel.</p>
+              <p>Assim a fila nao trava e o cliente nao fica parado por inatividade.</p>
+            </div>
+            <div className="space-y-2">
+              <p className="font-semibold text-foreground">4. Percentuais atuais do split</p>
+              <p>Prospector: <span className="text-foreground font-semibold">{opsState.settings.prospectorPercent}%</span></p>
+              <p>Executor: <span className="text-foreground font-semibold">{opsState.settings.executorPercent}%</span></p>
+              <p>Agencia: <span className="text-foreground font-semibold">{opsState.settings.agencyPercent}%</span></p>
+              <p>Esses valores podem ser ajustados no bloco de configuracao financeira desta pagina.</p>
+            </div>
+            <div className="space-y-2">
+              <p className="font-semibold text-foreground">5. Transparencia e governanca</p>
+              <p>Mudancas de escopo, valor, responsavel e status devem ficar registradas no CRM para rastreabilidade total.</p>
+              <p>A recomendacao operacional e abrir grupo com cliente + gestor + prospectador no fechamento para manter tudo transparente.</p>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+      <>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="border-border/40">
           <CardHeader>
@@ -169,6 +223,8 @@ export default function ProfissionaisOps() {
           ))}
         </CardContent>
       </Card>
+      </>
+      )}
     </div>
   );
 }

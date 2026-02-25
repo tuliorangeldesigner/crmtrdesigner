@@ -10,8 +10,8 @@ const baseNavItems = [
     { name: 'Gamificacao', icon: Trophy, path: '/gamificacao' },
     { name: 'Equipe', icon: UsersRound, path: '/equipe' },
     { name: 'Manual', icon: BookOpen, path: '/manual' },
-    { name: 'Configuracoes', icon: Settings, path: '/configuracoes' },
 ]
+const configNavItem = { name: 'Configuracoes', icon: Settings, path: '/configuracoes' }
 
 const adminNavItems = [
     { name: 'Captacao de Leads IA', icon: MapPinned, path: '/captacao-ia' },
@@ -20,8 +20,11 @@ const adminNavItems = [
     { name: 'Politicas Internas', icon: FileText, path: '/politicas-internas' },
 ]
 
-export function getNavItems(_isAdmin: boolean) {
-    return [...baseNavItems, ...adminNavItems]
+export function getNavItems(isAdmin: boolean) {
+    if (isAdmin) {
+        return [...baseNavItems, ...adminNavItems, configNavItem]
+    }
+    return [...baseNavItems, configNavItem]
 }
 
 export default function Sidebar() {
