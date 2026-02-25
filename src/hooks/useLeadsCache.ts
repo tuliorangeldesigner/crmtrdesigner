@@ -12,7 +12,8 @@ export let globalLeadsCache: Lead[] | null = null;
 export let globalProfilesCache: Record<string, any> = {};
 let lastFetchTime = 0;
 let globalSubscription: any = null;
-let notificationPermissionRequested = false;`r`nlet lastSlowConnectionToastAt = 0;
+let notificationPermissionRequested = false;
+let lastSlowConnectionToastAt = 0;
 
 const specialtyLabelMap: Record<string, string> = OPS_QUEUE_SPECIALTIES.reduce((acc, s) => {
     acc[s.value] = s.label;
@@ -59,8 +60,10 @@ async function notifyBrowser(title: string, body: string) {
             return;
         }
 
-        if (Notification.permission === 'default' && !notificationPermissionRequested) {
-            notificationPermissionRequested = true;
+let notificationPermissionRequested = false;
+let lastSlowConnectionToastAt = 0;
+let notificationPermissionRequested = false;
+let lastSlowConnectionToastAt = 0;
             const permission = await Notification.requestPermission();
             if (permission === 'granted') {
                 new Notification(title, { body });
@@ -249,6 +252,7 @@ export function useLeadsCache() {
 
     return { leads, profilesMeta, loading, refetch };
 }
+
 
 
 
