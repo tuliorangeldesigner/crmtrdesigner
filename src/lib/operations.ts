@@ -133,13 +133,14 @@ export function syncProfessionalsFromProfiles(
   const next = { ...state, professionals: { ...state.professionals } };
   Object.values(profilesMeta).forEach((profile: any) => {
     if (!profile?.id) return;
-    if (!includeRoles.includes(profile.role || 'prospectador')) return;
+    const profileRole = profile.role || 'prospectador';
+    if (!includeRoles.includes(profileRole)) return;
     if (!next.professionals[profile.id]) {
       next.professionals[profile.id] = {
         id: profile.id,
         name: profile.full_name || profile.email || profile.id,
         email: profile.email || '',
-        specialties: [profile.role === 'prospectador' ? 'prospeccao' : 'design'],
+        specialties: [profileRole === 'prospectador' ? 'prospeccao' : 'design'],
         activeJobs: 0,
         maxActiveJobs: 2,
         qualityScore: 80,
@@ -153,6 +154,11 @@ export function syncProfessionalsFromProfiles(
         name: profile.full_name || profile.email || profile.id,
         email: profile.email || next.professionals[profile.id].email,
       };
+
+      // Regra forte: usuario com cargo prospectador permanece apenas como prospectador.
+      if (profileRole === 'prospectador') {
+        next.professionals[profile.id].specialties = ['prospeccao'];
+      }
     }
   });
   return next;
