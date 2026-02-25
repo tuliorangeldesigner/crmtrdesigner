@@ -38,6 +38,9 @@ export default function Manual() {
                 <Button variant="outline" size="sm" asChild className="text-xs">
                     <a href="#uso-ia">Uso de IA</a>
                 </Button>
+                <Button variant="outline" size="sm" asChild className="text-xs">
+                    <a href="#mapa-prospeccao">Mapa de Prospeccao</a>
+                </Button>
             </div>
 
             {/* =================== SEÇÃO 1: OBJETIVO =================== */}
@@ -115,7 +118,7 @@ export default function Manual() {
                 </CardContent>
             </Card>
 
-            {/* =================== SEÇÃO 4: NICHOS =================== */}
+                        {/* =================== SEÇÃO 4: NICHOS =================== */}
             <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center gap-2">
                     <Users className="w-5 h-5 text-primary" />
@@ -132,6 +135,89 @@ export default function Manual() {
                         {['Advogados', 'Empresas grandes', 'Negócios muito estruturados'].map(n => (
                             <Badge key={n} variant="outline" className="bg-red-500/10 text-red-400 border-transparent text-xs">{n}</Badge>
                         ))}
+                    </div>
+                    <div className="rounded-lg border border-border p-3 bg-background/40 space-y-3">
+                        <p className="text-xs font-semibold text-foreground">Estados e cidades para priorizar (com motivo)</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div className="rounded-md border border-border/50 p-2">
+                                <p className="text-xs font-medium text-foreground">SP: Sao Paulo, Campinas, Guarulhos, Osasco</p>
+                                <p className="text-xs text-muted-foreground mt-1">Maior volume de empresas locais e alta competicao digital. Dor forte de conversao e apresentacao visual.</p>
+                            </div>
+                            <div className="rounded-md border border-border/50 p-2">
+                                <p className="text-xs font-medium text-foreground">MG: Belo Horizonte, Uberlandia, Contagem</p>
+                                <p className="text-xs text-muted-foreground mt-1">Mercado em crescimento com boa resposta para servicos remotos. Excelente para saude, estetica e servicos locais.</p>
+                            </div>
+                            <div className="rounded-md border border-border/50 p-2">
+                                <p className="text-xs font-medium text-foreground">RJ: Rio de Janeiro, Niteroi, Duque de Caxias</p>
+                                <p className="text-xs text-muted-foreground mt-1">Mercado muito visual (Instagram forte). Bons resultados para beleza, gastronomia e nichos de alto apelo visual.</p>
+                            </div>
+                            <div className="rounded-md border border-border/50 p-2">
+                                <p className="text-xs font-medium text-foreground">PR/SC/RS: Curitiba, Joinville, Porto Alegre</p>
+                                <p className="text-xs text-muted-foreground mt-1">Empresas mais estruturadas e previsiveis. Melhor taxa de fechamento com follow-up consistente.</p>
+                            </div>
+                            <div className="rounded-md border border-border/50 p-2 md:col-span-2">
+                                <p className="text-xs font-medium text-foreground">GO/DF: Goiania e Brasilia</p>
+                                <p className="text-xs text-muted-foreground mt-1">Regiao com forte crescimento e muitos negocios buscando posicionamento rapido para ganhar mercado.</p>
+                            </div>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground">
+                            Dica pratica: comece pelas capitais e cidades acima de 300 mil habitantes, depois avance para cidades satelite onde o mesmo nicho ja mostrou conversao.
+                        </p>
+                    </div>
+                </CardContent>
+            </Card>
+
+            <Card className="bg-card border-border border-blue-500/20" id="mapa-prospeccao"> 
+                <CardHeader className="flex flex-row items-center gap-2">
+                    <MapPin className="w-5 h-5 text-blue-400" />
+                    <CardTitle className="text-base">Mapa de Prospeccao (Regioes, Estados, Cidades e Dores)</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <p className="text-xs text-muted-foreground">
+                        Priorize mercados com alta concentracao de pequenas e medias empresas, maior ticket de servicos e forte competicao digital.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div className="rounded-lg border border-border p-3 bg-background/40">
+                            <p className="text-xs font-semibold text-foreground mb-2">Melhores regioes</p>
+                            <ul className="text-xs text-muted-foreground space-y-1">
+                                <li>1. Sudeste (maior volume e ticket)</li>
+                                <li>2. Sul (alta maturidade e recorrencia)</li>
+                                <li>3. Centro-Oeste (crescimento acelerado)</li>
+                            </ul>
+                        </div>
+
+                        <div className="rounded-lg border border-border p-3 bg-background/40">
+                            <p className="text-xs font-semibold text-foreground mb-2">Estados para priorizar</p>
+                            <ul className="text-xs text-muted-foreground space-y-1">
+                                <li>SP, MG, RJ</li>
+                                <li>PR, SC, RS</li>
+                                <li>GO e DF</li>
+                            </ul>
+                        </div>
+
+                        <div className="rounded-lg border border-border p-3 bg-background/40">
+                            <p className="text-xs font-semibold text-foreground mb-2">Cidades com alto potencial</p>
+                            <ul className="text-xs text-muted-foreground space-y-1">
+                                <li>Sao Paulo, Campinas, Guarulhos</li>
+                                <li>Belo Horizonte, Uberlandia, Contagem</li>
+                                <li>Rio de Janeiro, Niteroi, Duque de Caxias</li>
+                                <li>Curitiba, Joinville, Porto Alegre</li>
+                                <li>Goiania, Brasilia</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="rounded-lg border border-border p-3 bg-amber-500/5">
+                        <p className="text-xs font-semibold text-foreground mb-2">Nichos com maior dor (prioridade alta)</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground">
+                            <p><strong className="text-foreground">Saude e estetica local:</strong> dependem de agenda diaria, perfil fraco reduz confianca e conversao.</p>
+                            <p><strong className="text-foreground">Restaurantes e delivery:</strong> guerra por atencao no feed e anuncio, criativo ruim derruba pedidos.</p>
+                            <p><strong className="text-foreground">Imobiliarias e corretores:</strong> precisam de autoridade visual e videos para acelerar visitas.</p>
+                            <p><strong className="text-foreground">Academias e studios:</strong> precisam de constancia, prova social e oferta clara para fechar planos.</p>
+                            <p><strong className="text-foreground">Clinicas odontologicas:</strong> alto LTV por paciente, mas pouca estrategia de conteudo e funil.</p>
+                            <p><strong className="text-foreground">Comercio local premium:</strong> ticket medio alto, mas marca despadronizada e baixa percepcao de valor.</p>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
@@ -621,5 +707,6 @@ export default function Manual() {
         </div>
     );
 }
+
 
 
