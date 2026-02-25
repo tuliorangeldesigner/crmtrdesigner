@@ -11,6 +11,9 @@ import Configuracoes from '@/pages/Configuracoes'
 import Equipe from '@/pages/Equipe'
 import Gamificacao from '@/pages/Gamificacao'
 import CaptacaoOSM from '@/pages/CaptacaoOSM'
+import ProfissionaisOps from '@/pages/ProfissionaisOps'
+import FilaOperacional from '@/pages/FilaOperacional'
+import PoliticasInternas from '@/pages/PoliticasInternas'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import type { ReactNode } from 'react'
 
@@ -78,6 +81,30 @@ function App() {
                 element={
                   <AdminRoute>
                     <CaptacaoOSM />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/profissionais"
+                element={
+                  <AdminRoute>
+                    <ProfissionaisOps />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/fila-operacional"
+                element={
+                  <AdminRoute>
+                    <FilaOperacional />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/politicas-internas"
+                element={
+                  <AdminRoute>
+                    <PoliticasInternas />
                   </AdminRoute>
                 }
               />

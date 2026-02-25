@@ -444,6 +444,22 @@ export default function Manual() {
                 </CardContent>
             </Card>
 
+            <Card className="bg-card border-border border-primary/30">
+                <CardHeader className="flex flex-row items-center gap-2">
+                    <Users className="w-5 h-5 text-primary" />
+                    <CardTitle className="text-base">Fluxo com Especialistas e Fila Operacional</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-xs text-muted-foreground">
+                    <p>Quando o lead fechar, ele entra na fila operacional por especialidade (Design, Video, Motion, Web, Social ou Trafego).</p>
+                    <ul className="list-disc ml-5 space-y-2">
+                        <li><strong className="text-foreground">Distribuicao padrao:</strong> por fila justa (menor carga ativa, maior tempo sem job e melhor score).</li>
+                        <li><strong className="text-foreground">Transparencia obrigatoria:</strong> abrir grupo no WhatsApp com cliente + gestor + prospectador dono do lead.</li>
+                        <li><strong className="text-foreground">Registro no CRM:</strong> valor fechado, responsavel da entrega, prazo e status do job.</li>
+                        <li><strong className="text-foreground">Comissao:</strong> so conta quando o cliente estiver com pagamento confirmado.</li>
+                    </ul>
+                    <p>As regras completas ficam na pagina <strong className="text-foreground">Politicas Internas</strong>.</p>
+                </CardContent>
+            </Card>
             {/* =================== SEÇÃO 12: META DIÁRIA =================== */}
             <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center gap-2">
@@ -605,4 +621,5 @@ export default function Manual() {
         </div>
     );
 }
+
 

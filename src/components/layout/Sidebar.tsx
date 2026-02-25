@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, Columns3, Rocket, DollarSign, BookOpen, Settings, UsersRound, Trophy, MapPinned } from 'lucide-react'
+import { LayoutDashboard, Users, Columns3, Rocket, DollarSign, BookOpen, Settings, UsersRound, Trophy, MapPinned, BriefcaseBusiness, ListChecks, FileText } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
 const baseNavItems = [
@@ -15,6 +15,9 @@ const baseNavItems = [
 
 const adminNavItems = [
     { name: 'Captacao de Leads IA', icon: MapPinned, path: '/captacao-ia' },
+    { name: 'Profissionais', icon: BriefcaseBusiness, path: '/profissionais' },
+    { name: 'Fila Operacional', icon: ListChecks, path: '/fila-operacional' },
+    { name: 'Politicas Internas', icon: FileText, path: '/politicas-internas' },
 ]
 
 export function getNavItems(_isAdmin: boolean) {
