@@ -32,7 +32,7 @@ export default function FilaOperacional() {
       map[s.value] = opsState.queue.filter((q) => q.specialty === s.value && q.status !== 'entregue');
     });
     return map;
-  }, [opsState.queue]);
+  }, [opsState]);
 
   const assignNext = (specialty: OpsQueueSpecialty) => {
     const next = assignNextInQueue(opsState, specialty);
@@ -114,7 +114,7 @@ export default function FilaOperacional() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        <Card className="xl:col-span-3 border-border/60">
+        <Card className="xl:col-span-3 border-border/40">
           <CardHeader>
             <CardTitle className="text-base">Criar job manual</CardTitle>
             <CardDescription>Use quando quiser iniciar a producao sem depender de lead fechado/pago.</CardDescription>
@@ -161,7 +161,7 @@ export default function FilaOperacional() {
         {OPS_QUEUE_SPECIALTIES.map((specialty) => {
           const items = queueBySpecialty[specialty.value] || [];
           return (
-            <Card key={specialty.value} className="border-border/60">
+            <Card key={specialty.value} className="border-border/40">
               <CardHeader>
                 <CardTitle className="text-base">{specialty.label}</CardTitle>
                 <CardDescription>{items.length} job(s) ativos na fila</CardDescription>
@@ -176,7 +176,7 @@ export default function FilaOperacional() {
                 {items.map((item) => {
                   const prof = item.assignedProfessionalId ? opsState.professionals[item.assignedProfessionalId] : null;
                   return (
-                    <div key={item.id} className="rounded-lg border border-border/50 p-3 space-y-2">
+                    <div key={item.id} className="rounded-lg border border-border/30 p-3 space-y-2">
                       <div className="flex items-start justify-between gap-2">
                         <div>
                           <p className="text-sm font-semibold">{item.leadName}</p>

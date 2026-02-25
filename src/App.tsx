@@ -1,21 +1,31 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from '@/components/ui/sonner'
 import { AuthProvider, useAuth } from '@/contexts/AuthContext'
-import Login from '@/pages/Login'
-import Dashboard from '@/pages/Dashboard'
-import Leads from '@/pages/Leads'
-import Kanban from '@/pages/Kanban'
-import Comissoes from '@/pages/Comissoes'
-import Manual from '@/pages/Manual'
-import Configuracoes from '@/pages/Configuracoes'
-import Equipe from '@/pages/Equipe'
-import Gamificacao from '@/pages/Gamificacao'
-import CaptacaoOSM from '@/pages/CaptacaoOSM'
-import ProfissionaisOps from '@/pages/ProfissionaisOps'
-import FilaOperacional from '@/pages/FilaOperacional'
-import PoliticasInternas from '@/pages/PoliticasInternas'
 import DashboardLayout from '@/components/layout/DashboardLayout'
+import { lazy, Suspense } from 'react'
 import type { ReactNode } from 'react'
+
+const Login = lazy(() => import('@/pages/Login'))
+const Dashboard = lazy(() => import('@/pages/Dashboard'))
+const Leads = lazy(() => import('@/pages/Leads'))
+const Kanban = lazy(() => import('@/pages/Kanban'))
+const Comissoes = lazy(() => import('@/pages/Comissoes'))
+const Manual = lazy(() => import('@/pages/Manual'))
+const Configuracoes = lazy(() => import('@/pages/Configuracoes'))
+const Equipe = lazy(() => import('@/pages/Equipe'))
+const Gamificacao = lazy(() => import('@/pages/Gamificacao'))
+const CaptacaoOSM = lazy(() => import('@/pages/CaptacaoOSM'))
+const ProfissionaisOps = lazy(() => import('@/pages/ProfissionaisOps'))
+const FilaOperacional = lazy(() => import('@/pages/FilaOperacional'))
+const PoliticasInternas = lazy(() => import('@/pages/PoliticasInternas'))
+
+function PageLoader() {
+  return <div className="flex justify-center items-center py-20">Carregando pagina...</div>
+}
+
+function withSuspense(node: ReactNode) {
+  return <Suspense fallback={<PageLoader />}>{node}</Suspense>
+}
 
 function PrivateRoute({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth()
@@ -55,24 +65,24 @@ function App() {
           <Routes>
             <Route path="/login" element={
               <PublicRoute>
-                <Login />
+                {withSuspense(<Login />)}
               </PublicRoute>
             } />
 
             <Route element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/leads" element={<Leads />} />
-              <Route path="/kanban" element={<Kanban />} />
-              <Route path="/comissoes" element={<Comissoes />} />
-              <Route path="/gamificacao" element={<Gamificacao />} />
-              <Route path="/equipe" element={<Equipe />} />
-              <Route path="/manual" element={<Manual />} />
-              <Route path="/configuracoes" element={<Configuracoes />} />
+              <Route path="/dashboard" element={withSuspense(<Dashboard />)} />
+              <Route path="/leads" element={withSuspense(<Leads />)} />
+              <Route path="/kanban" element={withSuspense(<Kanban />)} />
+              <Route path="/comissoes" element={withSuspense(<Comissoes />)} />
+              <Route path="/gamificacao" element={withSuspense(<Gamificacao />)} />
+              <Route path="/equipe" element={withSuspense(<Equipe />)} />
+              <Route path="/manual" element={withSuspense(<Manual />)} />
+              <Route path="/configuracoes" element={withSuspense(<Configuracoes />)} />
               <Route
                 path="/captacao-osm"
                 element={
                   <AdminRoute>
-                    <CaptacaoOSM />
+                    {withSuspense(<CaptacaoOSM />)}
                   </AdminRoute>
                 }
               />
@@ -80,7 +90,7 @@ function App() {
                 path="/captacao-ia"
                 element={
                   <AdminRoute>
-                    <CaptacaoOSM />
+                    {withSuspense(<CaptacaoOSM />)}
                   </AdminRoute>
                 }
               />
@@ -88,7 +98,7 @@ function App() {
                 path="/profissionais"
                 element={
                   <AdminRoute>
-                    <ProfissionaisOps />
+                    {withSuspense(<ProfissionaisOps />)}
                   </AdminRoute>
                 }
               />
@@ -96,7 +106,7 @@ function App() {
                 path="/fila-operacional"
                 element={
                   <AdminRoute>
-                    <FilaOperacional />
+                    {withSuspense(<FilaOperacional />)}
                   </AdminRoute>
                 }
               />
@@ -104,7 +114,7 @@ function App() {
                 path="/politicas-internas"
                 element={
                   <AdminRoute>
-                    <PoliticasInternas />
+                    {withSuspense(<PoliticasInternas />)}
                   </AdminRoute>
                 }
               />

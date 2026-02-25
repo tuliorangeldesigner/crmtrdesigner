@@ -39,50 +39,58 @@ export function useOpsState() {
       setStorageMode(mode);
       setOpsState(merged);
       await persistOpsState(merged, mode);
-      if (alive) setLoadingOps(false);
+      if (alive) {
+        setLoadingOps(false);
+      }
     })();
     return () => {
       alive = false;
     };
   }, [syncWithCrm]);
 
-  useEffect(() => {
+  const syncedOpsState = useMemo(() => {
     const merged = syncWithCrm(opsState);
-    const changed = opsStateSignature(merged) !== opsStateSignature(opsState);
-    if (!changed) return;
-    globalOpsCache = merged;
-    setOpsState(merged);
-    persistOpsState(merged, storageMode);
-  }, [leads.length, Object.keys(profilesMeta).length]);
+    return opsStateSignature(merged) === opsStateSignature(opsState) ? opsState : merged;
+  }, [opsState, syncWithCrm]);
+
+  useEffect(() => {
+    if (syncedOpsState === opsState) return;
+    globalOpsCache = syncedOpsState;
+    void persistOpsState(syncedOpsState, storageMode);
+  }, [opsState, storageMode, syncedOpsState]);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      const automated = automateQueue(opsState);
-      if (opsStateSignature(automated) === opsStateSignature(opsState)) return;
-      globalOpsCache = automated;
-      setOpsState(automated);
-      persistOpsState(automated, storageMode);
+      setOpsState((prev) => {
+        const automated = automateQueue(prev);
+        if (opsStateSignature(automated) === opsStateSignature(prev)) return prev;
+        globalOpsCache = automated;
+        void persistOpsState(automated, storageMode);
+        return automated;
+      });
     }, 60000);
     return () => clearInterval(timer);
-  }, [opsState, storageMode]);
-
-  const setAndPersist = useCallback(async (next: OpsState) => {
-    globalOpsCache = next;
-    setOpsState(next);
-    await persistOpsState(next, storageMode);
   }, [storageMode]);
 
+  const setAndPersist = useCallback(async (next: OpsState) => {
+    const merged = syncWithCrm(next);
+    globalOpsCache = merged;
+    setOpsState(merged);
+    await persistOpsState(merged, storageMode);
+  }, [storageMode, syncWithCrm]);
+
   const updateAndPersist = useCallback(async (updater: (prev: OpsState) => OpsState) => {
-    const next = updater(opsState);
-    globalOpsCache = next;
-    setOpsState(next);
-    await persistOpsState(next, storageMode);
-  }, [opsState, storageMode]);
+    const next = updater(globalOpsCache || opsState);
+    const merged = syncWithCrm(next);
+    globalOpsCache = merged;
+    setOpsState(merged);
+    await persistOpsState(merged, storageMode);
+  }, [opsState, storageMode, syncWithCrm]);
 
   const modeLabel = useMemo(() => (storageMode === 'supabase' ? 'Supabase' : 'Local (fallback)'), [storageMode]);
 
   return {
-    opsState,
+    opsState: syncedOpsState,
     loadingOps,
     storageMode,
     modeLabel,
