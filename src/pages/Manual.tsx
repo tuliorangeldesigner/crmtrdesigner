@@ -6,7 +6,7 @@ import {
     BookOpen, Target, ArrowRight, DollarSign, AlertCircle,
     CheckCircle2, MessageSquare, Search, MapPin, Instagram, Smartphone,
     Bot, TrendingUp, Flame, Star, XCircle, Mic, Clock, Users, Zap, Copy,
-    Columns3, LayoutDashboard
+    Columns3, LayoutDashboard, ArrowUp
 } from 'lucide-react';
 
 const copyToClipboard = (text: string) => {
@@ -16,7 +16,7 @@ const copyToClipboard = (text: string) => {
 
 export default function Manual() {
     return (
-        <div className="space-y-8 max-w-4xl pb-12">
+        <div id="topo-manual" className="space-y-8 max-w-4xl pb-12">
             <div>
                 <h1 className="text-3xl font-bold tracking-tight">📘 Manual do Prospectador</h1>
                 <p className="text-muted-foreground mt-1">
@@ -746,6 +746,17 @@ export default function Manual() {
                     </p>
                 </CardContent>
             </Card>
+
+            <Button
+                asChild
+                size="icon"
+                className="fixed bottom-6 right-6 z-50 rounded-full shadow-lg shadow-primary/30"
+                aria-label="Voltar ao topo do manual"
+            >
+                <a href="#topo-manual">
+                    <ArrowUp className="w-4 h-4" />
+                </a>
+            </Button>
         </div>
     );
 }
