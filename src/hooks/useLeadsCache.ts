@@ -60,10 +60,6 @@ async function notifyBrowser(title: string, body: string) {
             return;
         }
 
-let notificationPermissionRequested = false;
-let lastSlowConnectionToastAt = 0;
-let notificationPermissionRequested = false;
-let lastSlowConnectionToastAt = 0;
             const permission = await Notification.requestPermission();
             if (permission === 'granted') {
                 new Notification(title, { body });
@@ -252,6 +248,8 @@ export function useLeadsCache() {
 
     return { leads, profilesMeta, loading, refetch };
 }
+
+
 
 
 
